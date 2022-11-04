@@ -2,6 +2,7 @@ import Ship from "./ShipFactory.js";
 
 const Gameboard = () => {
     let board = [];
+    let remainingShips = ["Carrier", "Battleship", "Destroyer", "Submarine", "Patrol Boat"]
 
     let getBoard = () => {
         return board;
@@ -20,9 +21,22 @@ const Gameboard = () => {
 
     let receiveAttack = (coordinate) => {
         if (board[coordinate]) {
+            let targetedShip = board[coordinate];
+
             // sends hit function to the correct ship
-            board[coordinate].incrementHits();
+            targetedShip.incrementHits();
+            
+            // // loop through the ships coordinates to see if it has been sunken
+            // for(let i of board[coordinate].getCoordinates()) 
+
             board[coordinate] = "HIT";
+
+            if (targetedShip.isSunk()) {
+                
+            }
+
+
+
             return;
         }
 

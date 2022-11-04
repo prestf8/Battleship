@@ -8,6 +8,8 @@ const Ship = (length) => {
         hits++;
     }
 
+    let getCoordinates = () => coordinates;
+
     let setLocation = (coordinate) => {
         coordinates.push(coordinate);
     }
@@ -22,7 +24,8 @@ const Ship = (length) => {
         isSunk,
         getHits,
         getLength,
-        setLocation
+        setLocation,
+        getCoordinates,
     }
 
 }
