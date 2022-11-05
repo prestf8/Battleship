@@ -9,8 +9,7 @@ describe("GAMEBOARD", () => {
         testBoard = Gameboard();
         testBoard.initializeArray();
 
-        testDestroyer = new Ship(3);
-        testOne = new Ship(1);
+        testDestroyer = new Ship("Destroyer", 3);
 
         for(let i=0; i < 100; i++) {
             testBoardArray[i] = null;

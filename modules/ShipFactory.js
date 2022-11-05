@@ -1,4 +1,4 @@
-const Ship = (length) => {
+const Ship = (type, length) => {
     let hits = 0;
     let coordinates = [];
 

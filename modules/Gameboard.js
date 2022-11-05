@@ -33,6 +33,7 @@ const Gameboard = () => {
 
             if (targetedShip.isSunk()) {
                 
+                
             }
 
 

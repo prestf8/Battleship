@@ -9,10 +9,10 @@ const Ship = require("../modules/ShipFactory");
 describe("SHIP", () => {
     let testShip;
     beforeEach(() => {
-        testShip= Ship(3);
+        testShip= Ship("Destroyer", 3);
     });
 
-    test("Initialization1", () => {
+    test("Properly keeping track of hits", () => {
         testShip.incrementHits();
         testShip.incrementHits();
         testShip.incrementHits();
