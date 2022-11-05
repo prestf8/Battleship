@@ -4,6 +4,8 @@ const Ship = (type, length) => {
 
     let getLength = () => length;
 
+    let getType = () => type;
+
     let incrementHits = () => {
         hits++;
     }
