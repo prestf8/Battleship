@@ -22,7 +22,7 @@ const Gameboard = () => {
     }
 
     let removeShip = (ship) => {
-        let index = remainingShips.indexOf(targetedShip.getType);
+        let index = remainingShips.indexOf(ship.getType());
         remainingShips.splice(index, 1);
     }
 
@@ -41,13 +41,10 @@ const Gameboard = () => {
             if (targetedShip.isSunk()) {
                 removeShip(targetedShip);
             }
-
-
-
             return;
         }
 
-        board[i] = "MISS";
+        board[coordinate] = "MISS";
     }
 
     return {
@@ -55,6 +52,7 @@ const Gameboard = () => {
         initializeArray,
         placeShip,
         receiveAttack,
+        getRemainingShips,
     }   
 
 }

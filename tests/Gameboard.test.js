@@ -32,10 +32,23 @@ describe("GAMEBOARD", () => {
         expect(testBoard.getBoard()).toEqual(testBoardArray);
     })
 
-    test("Receive Attack function", () => {
+    test("Receive Attack Function", () => {
         testBoard.placeShip(11, testDestroyer);
+        testBoard.placeShip(21, testDestroyer);
+        testBoard.placeShip(31, testDestroyer);
         testBoard.receiveAttack(11); 
-        expect(testBoard.getBoard()[11]).toEqual("HIT");
+        expect(testBoard.getBoard()[11]).toBe("HIT");
     })
+
+    test("Receive Attack function 2", () => {
+        testBoard.placeShip(11, testDestroyer);
+        testBoard.placeShip(21, testDestroyer);
+        testBoard.placeShip(31, testDestroyer);
+
+        testBoard.receiveAttack(11);
+        testBoard.receiveAttack(21);
+        testBoard.receiveAttack(31);
+        expect(testBoard.getRemainingShips()).toEqual(["Carrier", "Battleship", "Submarine", "Patrol Boat"]);
+    });
 
 })
