@@ -25,6 +25,7 @@ const Ship = (type, length) => {
         incrementHits,
         isSunk,
         getHits,
+        getType,
         getLength,
         setLocation,
         getCoordinates,

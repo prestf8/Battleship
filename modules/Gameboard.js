@@ -8,6 +8,8 @@ const Gameboard = () => {
         return board;
     }
 
+    let getRemainingShips = () => remainingShips;
+
     let initializeArray = () => {
         for(let i=0; i < 100; i++) {
             board[i] = null;
@@ -17,6 +19,11 @@ const Gameboard = () => {
     let placeShip = (coordinate, ship) => {
         board[coordinate] = ship;
         ship.setLocation(coordinate);
+    }
+
+    let removeShip = (ship) => {
+        let index = remainingShips.indexOf(targetedShip.getType);
+        remainingShips.splice(index, 1);
     }
 
     let receiveAttack = (coordinate) => {
@@ -32,8 +39,7 @@ const Gameboard = () => {
             board[coordinate] = "HIT";
 
             if (targetedShip.isSunk()) {
-                
-                
+                removeShip(targetedShip);
             }
 
 

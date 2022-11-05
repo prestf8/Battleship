@@ -36,7 +36,6 @@ describe("GAMEBOARD", () => {
         testBoard.placeShip(11, testDestroyer);
         testBoard.receiveAttack(11); 
         expect(testBoard.getBoard()[11]).toEqual("HIT");
-
     })
 
 })
