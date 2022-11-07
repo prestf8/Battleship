@@ -10,6 +10,7 @@ describe("GAMEBOARD", () => {
     testSubmarine,
     testPatrolBoat;
   let testBoardArray = [];
+
   beforeEach(() => {
     testBoard = Gameboard();
     testBoard.initializeArray();
@@ -116,4 +117,16 @@ describe("GAMEBOARD", () => {
 
     expect(testBoard.isAllSunk()).toBe(true);
   });
+
+  test("Check If Hit Already", () => {
+    testBoard.placeShip(11, testPatrolBoat);
+    testBoard.placeShip(12, testPatrolBoat);
+
+    // expect(testBoard.getBoard()[11]).toEqual(testPatrolBoat);
+    // expect(testBoard.getBoard()[12]).toEqual(testPatrolBoat);
+
+    testBoard.receiveAttack(11);
+    testBoard.receiveAttack(12);
+    expect(testBoard.checkIfHitAlready(11)).toBe(true);
+  })
 });

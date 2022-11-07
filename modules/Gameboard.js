@@ -22,6 +22,13 @@ const Gameboard = () => {
     }
   };
 
+  let checkIfHitAlready = (coordinate) => {
+    if (board[coordinate] == "HIT" || board[coordinate] == "MISS") {
+      return true;
+    }
+    return false;
+  }
+
   let placeShip = (coordinate, ship) => {
     board[coordinate] = ship;
     ship.setLocation(coordinate);
@@ -62,6 +69,7 @@ const Gameboard = () => {
     receiveAttack,
     getRemainingShips,
     isAllSunk,
+    checkIfHitAlready,
   };
 };
 
