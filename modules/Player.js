@@ -23,6 +23,9 @@ const Player = () => {
     }
 
     receivingPlayer.getGameboard().receiveAttack(coordinate);
+
+    toggleTurn(); // toggle turn for player attacking
+    receivingPlayer.toggleTurn(); // toggle turn for player receiving attack;
   }
 
   return {
