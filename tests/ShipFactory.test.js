@@ -1,4 +1,4 @@
-const Ship = require("../modules/ShipFactory");
+const Ship = require("../factories/ShipFactory");
 
 
 

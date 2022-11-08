@@ -1,5 +1,5 @@
-import Player from "../modules/Player.js";
-import Ship from "../modules/ShipFactory.js"
+import Player from "../factories/Player.js";
+import Ship from "../factories/ShipFactory.js"
  
 describe("PLAYER: ", () => {
     let player1, player2;
