@@ -19,7 +19,7 @@ const Gameboard = () => {
   let initializeArray = () => {
     for (let i = 0; i < 100; i++) {
       board[i] = null;
-    }
+    } 
   };
 
   let checkIfHitAlready = (coordinate) => {
@@ -45,9 +45,6 @@ const Gameboard = () => {
 
       // sends hit function to the correct ship
       targetedShip.incrementHits();
-
-      // // loop through the ships coordinates to see if it has been sunken
-      // for(let i of board[coordinate].getCoordinates())
 
       board[coordinate] = "HIT";
 
