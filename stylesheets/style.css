@@ -1,0 +1,30 @@
+body {
+    padding: 1rem;
+}
+
+.boards-container {
+    display: flex;
+    
+    justify-content: space-between;
+}
+
+.board {
+    display: grid;
+    grid-template-rows: repeat(10, auto);
+    grid-template-columns: repeat(10, auto);
+}
+
+.board-div {
+    width: 35px;
+    height: 35px;
+    border: 1px solid black;
+}
+
+.board-div:hover {
+    background: gray;
+    cursor: pointer;
+}
+
+
+.computer-board {
+}
