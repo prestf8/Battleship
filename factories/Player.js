@@ -1,4 +1,4 @@
-import Gameboard from "./Gameboard";
+import Gameboard from "./Gameboard.js";
 
 const Player = () => {
   let turn = false;
@@ -35,5 +35,4 @@ const Player = () => {
     getGameboard,
   }
 };
-
-module.exports = Player;
+export default Player;

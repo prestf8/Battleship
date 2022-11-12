@@ -21,8 +21,11 @@ body {
 }
 
 .board-div:hover {
-    background: gray;
     cursor: pointer;
+}
+
+.board-div-selected {
+    background-color: rgb(104, 184, 104);
 }
 
 
