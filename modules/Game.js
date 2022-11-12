@@ -15,17 +15,19 @@ const Game = (() => {
 
         for(let i=0; i < shipsToBePlaced.length; i++) {
 
-            // switch (shipsToBePlaced[i]) {
-            //     case "Carrier":
-            //         placeDownSingleShip(player, 5, horizontal)
-            // }
+            // DOM module initializes event listeners "hover" and "click"
+            // When "click" event, check through Game Module and if valid then set shipLength to be the next ship
+            // Then in the same function in Game Module function 
+
 
             
 
         }
             
             // player.getGameboard().placeShip(coordinate, ship);
-    } 
+    }
+    
+    
     
     let placeDownSingleShip = (player, length) => {
 
