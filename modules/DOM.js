@@ -16,17 +16,14 @@ const DOM = (() => {
 
     let storeShipPlacementH = (boardUnit, hoveredCoordinate) => {
         let selectedCoordinates = [];
-        let row = boardUnit.getAttribute("data-coordinate")[0];
+        let row = boardUnit.getAttribute("data-row");
         for(let i=0; i < placeShipLength; i++) { // placeShipLength - 1 not including hoveredCoordinate
             let selectedCoordinate = hoveredCoordinate + i; 
             let selectedCoordinateStr = (hoveredCoordinate+i).toString(); // string version
-
-            if (selectedCoordinate < 10) {
-                selectedCoordinateStr = '0' + selectedCoordinateStr;
-            }
+            let selectedCoordinateDOM = playerBoardDOM.querySelector(`.board-div[data-coordinate='${selectedCoordinate}']`)
 
             // selected coordinate shouldnt be off the board && should be on the same row
-            if (selectedCoordinate <= 100 && selectedCoordinateStr.toString()[0] === row) { 
+            if (selectedCoordinate <= 100 && row == selectedCoordinateDOM.getAttribute("data-row")) { 
                 selectedCoordinates.push(selectedCoordinateStr);
             }
         }
@@ -73,21 +70,25 @@ const DOM = (() => {
         
         rotateDirectionBtn.addEventListener("click", toggleHorizontal);
         
-        for(let i=0; i < 100; i++) {
-            let playerBoardDiv = document.createElement("div");
-            let computerBoardDiv = document.createElement("div");
-            playerBoardDiv.setAttribute("class", "board-div player-board-div");
-            computerBoardDiv.setAttribute("class", "board-div computer-board-div");
-
-            let dataCoordinateValue = String(i+1);
-            if (parseInt(dataCoordinateValue) < 10) {
-                dataCoordinateValue = '0' + dataCoordinateValue;
+        for (let i=0; i < 10; i++) {
+            for(let j=0; j < 10; j++) {
+                let playerBoardDiv = document.createElement("div");
+                let computerBoardDiv = document.createElement("div");
+                playerBoardDiv.setAttribute("class", "board-div player-board-div");
+                computerBoardDiv.setAttribute("class", "board-div computer-board-div");
+    
+                let dataCoordinateValue = String((i*10)+(j+1));
+                playerBoardDiv.setAttribute("data-coordinate", dataCoordinateValue);
+                computerBoardDiv.setAttribute("data-coordinate", dataCoordinateValue);
+                playerBoardDiv.setAttribute("data-row", i+1);
+                computerBoardDiv.setAttribute("data-row", i+1);
+                playerBoardDiv.setAttribute("data-col", j+1);
+                computerBoardDiv.setAttribute("data-col", j+1);
+                playerBoardDOM.appendChild(playerBoardDiv);
+                computerBoardDOM.appendChild(computerBoardDiv);
             }
-            playerBoardDiv.setAttribute("data-coordinate", dataCoordinateValue);
-            computerBoardDiv.setAttribute("data-coordinate", dataCoordinateValue);
-            playerBoardDOM.appendChild(playerBoardDiv);
-            computerBoardDOM.appendChild(computerBoardDiv);
         }
+        
 
         // store the newly generated board units 
         playerBoardDivs = document.querySelectorAll(".player-board-div");
