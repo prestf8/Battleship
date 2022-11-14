@@ -31,3 +31,11 @@ body {
 
 .computer-board {
 }
+
+.rotate-direction-ship {
+    /* change these dimensions later */
+    width: 150px;
+    height: 65px;
+    font-size: 1.3rem;
+    cursor: pointer;
+}

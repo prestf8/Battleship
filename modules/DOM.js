@@ -1,3 +1,5 @@
+import Game from "./Game.js";
+
 const DOM = (() => {
     let playerBoardDOM, computerBoardDOM;
     let placeShipLength = 5; // Length of ship to place
@@ -6,14 +8,28 @@ const DOM = (() => {
 
     let clickBoardUnit = (event) => {
         // console.log(event.target.getAttribute("data-coordinate"))
+        let clickedBoardUnit = event.target;
+        let clickedCoords = parseInt(event.target.getAttribute("data-coordinate"));
+        let shipPlacement;
+        
+        if (horizontal) { 
+            shipPlacement = storeShipPlacementH(clickedBoardUnit, clickedCoords);
+        } else {
+            shipPlacement = storeShipPlacementV(clickedBoardUnit, clickedCoords);
+        }
+        
+        Game.placeDownShip(shipPlacement);
     }
 
     let getHorizontal = () => horizontal;
+
+    let getPlaceShipLength = () => placeShipLength;
 
     let toggleHorizontal = () => {
         horizontal = !horizontal;
     }
 
+    // hover ship placement for horizontal ship placement functionality
     let storeShipPlacementH = (boardUnit, hoveredCoordinate) => {
         let selectedCoordinates = [];
         let row = boardUnit.getAttribute("data-row");
@@ -28,12 +44,12 @@ const DOM = (() => {
 
             // selected coordinate shouldnt be off the board && should be on the same row
             if (selectedCoordinateDOM && row == selectedCoordinateDOM.getAttribute("data-row")) { 
-                selectedCoordinates.push(selectedCoordinate);
+                selectedCoordinates.push(String(selectedCoordinate));
             }
         }
         return selectedCoordinates;
     }
-
+    // hover ship placement for vertical ship placement functionality
     let storeShipPlacementV = (boardUnit, hoveredCoordinate) => {
         let hoveredCoordinateStr = String(hoveredCoordinate);
 
@@ -91,7 +107,7 @@ const DOM = (() => {
 
     let initialization = () => {
         playerBoardDOM= document.querySelector(".player-board");
-        computerBoardDOM= document.querySelector(".computer-board");
+        // computerBoardDOM= document.querySelector(".computer-board");
         let rotateDirectionBtn = document.querySelector(".rotate-direction-ship");
         
         rotateDirectionBtn.addEventListener("click", toggleHorizontal);
@@ -99,9 +115,9 @@ const DOM = (() => {
         for (let i=0; i < 10; i++) {
             for(let j=0; j < 10; j++) {
                 let playerBoardDiv = document.createElement("div");
-                let computerBoardDiv = document.createElement("div");
+                // let computerBoardDiv = document.createElement("div");
                 playerBoardDiv.setAttribute("class", "board-div player-board-div");
-                computerBoardDiv.setAttribute("class", "board-div computer-board-div");
+                // computerBoardDiv.setAttribute("class", "board-div computer-board-div");
     
                 let dataCoordinateValue = String((i*10)+(j+1));
                 if (dataCoordinateValue < 10) {
@@ -110,13 +126,13 @@ const DOM = (() => {
 
 
                 playerBoardDiv.setAttribute("data-coordinate", dataCoordinateValue);
-                computerBoardDiv.setAttribute("data-coordinate", dataCoordinateValue);
+                // computerBoardDiv.setAttribute("data-coordinate", dataCoordinateValue);
                 playerBoardDiv.setAttribute("data-row", i+1);
-                computerBoardDiv.setAttribute("data-row", i+1);
+                // computerBoardDiv.setAttribute("data-row", i+1);
                 playerBoardDiv.setAttribute("data-col", j+1);
-                computerBoardDiv.setAttribute("data-col", j+1);
+                // computerBoardDiv.setAttribute("data-col", j+1);
                 playerBoardDOM.appendChild(playerBoardDiv);
-                computerBoardDOM.appendChild(computerBoardDiv);
+                // computerBoardDOM.appendChild(computerBoardDiv);
             }
         }
         
@@ -136,6 +152,7 @@ const DOM = (() => {
         initialization,
         toggleHorizontal,
         getHorizontal,
+        getPlaceShipLength
     }
     
 })()

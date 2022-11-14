@@ -5,7 +5,7 @@ const Player = () => {
   let gameboard;
 
   let initialization = () => {
-    gameboard = new Gameboard();
+    gameboard = Gameboard();
     gameboard.initializeArray();
   };
 

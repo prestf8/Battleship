@@ -22,6 +22,13 @@ const Gameboard = () => {
     } 
   };
 
+  let checkIfOccupied = (coordinate) => {
+    if (board[coordinate]) {
+      return true;
+    }
+    return false;
+  }
+
   let checkIfHitAlready = (coordinate) => {
     if (board[coordinate] == "HIT" || board[coordinate] == "MISS") {
       return true;
@@ -60,6 +67,7 @@ const Gameboard = () => {
   let isAllSunk = () => remainingShips.length === 0;
 
   return {
+    checkIfOccupied,
     getBoard,
     initializeArray,
     placeShip,
