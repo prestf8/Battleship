@@ -19,25 +19,47 @@ const DOM = (() => {
         let row = boardUnit.getAttribute("data-row");
         for(let i=0; i < placeShipLength; i++) { // placeShipLength - 1 not including hoveredCoordinate
             let selectedCoordinate = hoveredCoordinate + i; 
-            let selectedCoordinateStr = (hoveredCoordinate+i).toString(); // string version
+
+            if (selectedCoordinate < 10) {
+                selectedCoordinate = '0' + selectedCoordinate;
+            }
+
             let selectedCoordinateDOM = playerBoardDOM.querySelector(`.board-div[data-coordinate='${selectedCoordinate}']`)
 
             // selected coordinate shouldnt be off the board && should be on the same row
-            if (selectedCoordinate <= 100 && row == selectedCoordinateDOM.getAttribute("data-row")) { 
-                selectedCoordinates.push(selectedCoordinateStr);
+            if (selectedCoordinateDOM && row == selectedCoordinateDOM.getAttribute("data-row")) { 
+                selectedCoordinates.push(selectedCoordinate);
             }
         }
         return selectedCoordinates;
     }
 
     let storeShipPlacementV = (boardUnit, hoveredCoordinate) => {
+        let hoveredCoordinateStr = String(hoveredCoordinate);
+
         let selectedCoordinates = [];
-        let column = boardUnit.getAttribute("data-coordinate")[0];
+        let col = boardUnit.getAttribute("data-col");
+
+        if (parseInt(hoveredCoordinate) < 10) {
+            hoveredCoordinateStr = '0' + hoveredCoordinateStr;
+        }
+
+        let hoveredCoordinateCol = hoveredCoordinate % 10;
+
+        if (hoveredCoordinate == 100) {
+            selectedCoordinates.push(100);
+            return selectedCoordinates;
+        }
+
+        // console.log(hoveredCoordinateStr);
         for(let i=0; i < placeShipLength; i++) { // placeShipLength - 1 not including hoveredCoordinate
-            let selectedCoordinate = hoveredCoordinate + i; 
+            // let selectedCoordinate = (parseInt(hoveredCoordinateStr[0]) + i) + hoveredCoordinateStr[1]; 
+            let selectedCoordinate = String(parseInt(hoveredCoordinateStr[0])+i)+hoveredCoordinateCol;
+            // console.log(selectedCoordinate);
+            let selectedCoordinateDOM = playerBoardDOM.querySelector(`.board-div[data-coordinate='${selectedCoordinate}']`)
 
             // selected coordinate shouldnt be off the board && should be on the same row
-            if (selectedCoordinate <= 100 && selectedCoordinate.toString()[0] === row) { 
+            if (selectedCoordinateDOM && col == selectedCoordinateDOM.getAttribute("data-col")) { 
                 selectedCoordinates.push(selectedCoordinate);
             }
         }
@@ -54,7 +76,11 @@ const DOM = (() => {
 
         let shipPlacement;
 
-        shipPlacement = storeShipPlacementH(hoveredBoardUnit, hoveredCoordinate);
+        if (horizontal) {
+            shipPlacement = storeShipPlacementH(hoveredBoardUnit, hoveredCoordinate);
+        } else {
+            shipPlacement = storeShipPlacementV(hoveredBoardUnit, hoveredCoordinate);
+        }
 
         for(const coord of shipPlacement) {
             let boardUnit = playerBoardDOM.querySelector(`[data-coordinate="${coord}"]`);
@@ -78,6 +104,11 @@ const DOM = (() => {
                 computerBoardDiv.setAttribute("class", "board-div computer-board-div");
     
                 let dataCoordinateValue = String((i*10)+(j+1));
+                if (dataCoordinateValue < 10) {
+                    dataCoordinateValue = '0' + dataCoordinateValue;
+                }
+
+
                 playerBoardDiv.setAttribute("data-coordinate", dataCoordinateValue);
                 computerBoardDiv.setAttribute("data-coordinate", dataCoordinateValue);
                 playerBoardDiv.setAttribute("data-row", i+1);
