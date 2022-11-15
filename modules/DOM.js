@@ -13,24 +13,28 @@ const DOM = (() => {
         let shipPlacement;
         
         if (horizontal) { 
-            shipPlacement = storeShipPlacementH(clickedBoardUnit, clickedCoords);
+            shipPlacement = getShipPlacementH(clickedBoardUnit, clickedCoords);
         } else {
-            shipPlacement = storeShipPlacementV(clickedBoardUnit, clickedCoords);
+            shipPlacement = getShipPlacementV(clickedBoardUnit, clickedCoords);
         }
         
         let canPlaceDownShip = Game.checkIfCanPlaceDownShip(shipPlacement);
-        console.log(canPlaceDownShip);
         if (canPlaceDownShip) {
             for(let coords of shipPlacement) {
                 let boardUnitDOM = playerBoardDOM.querySelector(`.player-board-div[data-coordinate='${coords}']`);
-                console.log(boardUnitDOM);
                 boardUnitDOM.classList.add("board-div-selected");
             }
 
+            Game.placeDownShip(shipPlacement);
         }
+
     }
 
     let getHorizontal = () => horizontal;
+
+    let setPlaceShipLength = (length) => {
+        placeShipLength = length;
+    }
 
     let getPlaceShipLength = () => placeShipLength;
 
@@ -39,7 +43,7 @@ const DOM = (() => {
     }
 
     // hover ship placement for horizontal ship placement functionality
-    let storeShipPlacementH = (boardUnit, hoveredCoordinate) => {
+    let getShipPlacementH = (boardUnit, hoveredCoordinate) => {
         let selectedCoordinates = [];
         let row = boardUnit.getAttribute("data-row");
         for(let i=0; i < placeShipLength; i++) { // placeShipLength - 1 not including hoveredCoordinate
@@ -59,7 +63,7 @@ const DOM = (() => {
         return selectedCoordinates;
     }
     // hover ship placement for vertical ship placement functionality
-    let storeShipPlacementV = (boardUnit, hoveredCoordinate) => {
+    let getShipPlacementV = (boardUnit, hoveredCoordinate) => {
         let hoveredCoordinateStr = String(hoveredCoordinate);
 
         let selectedCoordinates = [];
@@ -92,6 +96,7 @@ const DOM = (() => {
     }
 
     let hoverShipPlacement = (event) => {
+        console.log(placeShipLength);
         let hoveredBoardUnit = event.target;
         let hoveredCoordinate = parseInt(hoveredBoardUnit.getAttribute("data-coordinate"));
 
@@ -102,9 +107,9 @@ const DOM = (() => {
         let shipPlacement;
 
         if (horizontal) {
-            shipPlacement = storeShipPlacementH(hoveredBoardUnit, hoveredCoordinate);
+            shipPlacement = getShipPlacementH(hoveredBoardUnit, hoveredCoordinate);
         } else {
-            shipPlacement = storeShipPlacementV(hoveredBoardUnit, hoveredCoordinate);
+            shipPlacement = getShipPlacementV(hoveredBoardUnit, hoveredCoordinate);
         }
 
         for(const coord of shipPlacement) {
@@ -161,7 +166,8 @@ const DOM = (() => {
         initialization,
         toggleHorizontal,
         getHorizontal,
-        getPlaceShipLength
+        getPlaceShipLength,
+        setPlaceShipLength
     }
     
 })()

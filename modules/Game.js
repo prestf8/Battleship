@@ -10,6 +10,29 @@ const Game = (() => {
     let placeDownStage = true;
     let combatStage = false;
 
+    let shipsToBePlaced = [
+        {
+            name: "Carrier",
+            size: 5,
+        },
+        {
+            name: "Battleship",
+            size: 4,
+        },
+        {
+            name: "Destroyer",
+            size: 3,
+        },
+        {
+            name: "Submarine",
+            size: 3,
+        },
+        {
+            name: "Patrol Boat",
+            size: 2,
+        }
+    ]
+
     let checkIfCanPlaceDownShip = (shipPlacement) => {
         // Conditions: Placement cannot be already occupied & Ship placement cannot be off the board
         for(let placement of shipPlacement) {
@@ -24,6 +47,28 @@ const Game = (() => {
     }
     
     let placeDownShip = (shipPlacement) => {
+        
+        if (!placeDownStage) {
+            return;
+            // THEN REMOVE EVENT LISTENERS AND REDIRECT CLICKS TO ATTACKING
+        }
+        
+        let shipData = shipsToBePlaced.shift();
+        let playerGameboard = player.getGameboard();
+        let shipToBePlaced = Ship(shipData.name, shipData.size);
+
+        for(let coords of shipPlacement) {
+            playerGameboard.placeShip(parseInt(coords), shipToBePlaced);
+        }
+
+        if (shipsToBePlaced.length > 0) {
+            DOM.setPlaceShipLength(shipsToBePlaced[0].size);
+        } else {
+            placeDownStage = false;
+            combatStage = true;
+        }
+
+
     }
 
     let initialization = () => {
