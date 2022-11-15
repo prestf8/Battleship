@@ -9,19 +9,21 @@ const Game = (() => {
     // stages
     let placeDownStage = true;
     let combatStage = false;
-    
-    let placeDownShip = (shipPlacement) => {
 
+    let checkIfCanPlaceDownShip = (shipPlacement) => {
         // Conditions: Placement cannot be already occupied & Ship placement cannot be off the board
         for(let placement of shipPlacement) {
             if (player.getGameboard().checkIfOccupied(parseInt(placement))) {
                 return;
             }
         }
-
         if (shipPlacement.length !== DOM.getPlaceShipLength()) {
             return;
         }
+        return true;
+    }
+    
+    let placeDownShip = (shipPlacement) => {
     }
 
     let initialization = () => {
@@ -33,6 +35,7 @@ const Game = (() => {
     return {
         placeDownShip,
         initialization,
+        checkIfCanPlaceDownShip
     }
 
     

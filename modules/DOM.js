@@ -18,7 +18,16 @@ const DOM = (() => {
             shipPlacement = storeShipPlacementV(clickedBoardUnit, clickedCoords);
         }
         
-        Game.placeDownShip(shipPlacement);
+        let canPlaceDownShip = Game.checkIfCanPlaceDownShip(shipPlacement);
+        console.log(canPlaceDownShip);
+        if (canPlaceDownShip) {
+            for(let coords of shipPlacement) {
+                let boardUnitDOM = playerBoardDOM.querySelector(`.player-board-div[data-coordinate='${coords}']`);
+                console.log(boardUnitDOM);
+                boardUnitDOM.classList.add("board-div-selected");
+            }
+
+        }
     }
 
     let getHorizontal = () => horizontal;
@@ -87,7 +96,7 @@ const DOM = (() => {
         let hoveredCoordinate = parseInt(hoveredBoardUnit.getAttribute("data-coordinate"));
 
         for(let boardUnit of playerBoardDivs) { 
-            boardUnit.classList.remove("board-div-selected");
+            boardUnit.classList.remove("board-div-hovered");
         }
 
         let shipPlacement;
@@ -100,7 +109,7 @@ const DOM = (() => {
 
         for(const coord of shipPlacement) {
             let boardUnit = playerBoardDOM.querySelector(`[data-coordinate="${coord}"]`);
-            boardUnit.classList.add("board-div-selected");
+            boardUnit.classList.add("board-div-hovered");
         }
         // console.log(toBeSelectedCoordinates);
     }
