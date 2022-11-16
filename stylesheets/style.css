@@ -1,22 +1,58 @@
+@import url('https://fonts.googleapis.com/css2?family=Ubuntu&display=swap');
+
 body {
     padding: 1rem;
 }
 
+
+.game-logo {
+    font-size: 3rem;
+    text-align: center;
+    margin: 3rem;
+    font-family: 'Ubuntu', sans-serif;
+}
+
+.place-down-ship-elements {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.place-your {
+    text-align: center;
+}
+
+.rotate-direction-ship {
+    /* change these dimensions later */
+    font-size: 1rem;
+    padding: 0.5rem;
+    cursor: pointer;
+    margin: 2rem 0;
+}
+
 .boards-container {
     display: flex;
-    
-    justify-content: space-between;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.computer-board {
+    margin-top: 2rem;
 }
 
 .board {
     display: grid;
-    grid-template-rows: repeat(10, auto);
-    grid-template-columns: repeat(10, auto);
+    grid-template-rows: repeat(10, 35px);
+    grid-template-columns: repeat(10, 35px);
+}
+
+.invis {
+    display: none;
 }
 
 .board-div {
-    width: 35px;
-    height: 35px;
     border: 1px solid black;
 }
 
@@ -32,14 +68,13 @@ body {
     background-color: cyan;
 }
 
+@media screen and (min-width: 750px) {
+    .boards-container {
+        flex-direction: row;
+    }
 
-.computer-board {
-}
-
-.rotate-direction-ship {
-    /* change these dimensions later */
-    width: 150px;
-    height: 65px;
-    font-size: 1.3rem;
-    cursor: pointer;
+    .computer-board {
+        margin-top: 0;
+        margin-left: 2rem;
+    }
 }

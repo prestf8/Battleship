@@ -177,6 +177,12 @@ const DOM = (() => {
     }
 
     let beginCombatStage = () => {
+
+        // computer board is now visible
+        document.querySelector(".computer-board").classList.remove("invis");
+
+        // rotate ship button and the place your label are now off the DOM
+        document.querySelector(".place-down-ship-elements").classList.add("invis");
         for(let i=0; i < 100; i++) {
             playerBoardDivs[i].removeEventListener("mouseover", hoverShipPlacement);
             playerBoardDivs[i].removeEventListener("click", clickShipPlacement);  
