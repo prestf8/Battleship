@@ -66,8 +66,8 @@ const Game = (() => {
         } else {
             placeDownStage = false;
             combatStage = true;
+            DOM.beginCombatStage();
         }
-
 
     }
 

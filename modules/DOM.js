@@ -3,10 +3,34 @@ import Game from "./Game.js";
 const DOM = (() => {
     let playerBoardDOM, computerBoardDOM;
     let placeShipLength = 5; // Length of ship to place
-    let playerBoardDivs;
+    let playerBoardDivs, computerBoardDivs;
     let horizontal = true;
 
-    let clickBoardUnit = (event) => {
+    let hoverShipPlacement = (event) => {
+        console.log(placeShipLength);
+        let hoveredBoardUnit = event.target;
+        let hoveredCoordinate = parseInt(hoveredBoardUnit.getAttribute("data-coordinate"));
+
+        for(let boardUnit of playerBoardDivs) { 
+            boardUnit.classList.remove("board-div-hovered");
+        }
+
+        let shipPlacement;
+
+        if (horizontal) {
+            shipPlacement = getShipPlacementH(hoveredBoardUnit, hoveredCoordinate);
+        } else {
+            shipPlacement = getShipPlacementV(hoveredBoardUnit, hoveredCoordinate);
+        }
+
+        for(const coord of shipPlacement) {
+            let boardUnit = playerBoardDOM.querySelector(`[data-coordinate="${coord}"]`);
+            boardUnit.classList.add("board-div-hovered");
+        }
+        // console.log(toBeSelectedCoordinates);
+    }
+
+    let clickShipPlacement = (event) => {
         // console.log(event.target.getAttribute("data-coordinate"))
         let clickedBoardUnit = event.target;
         let clickedCoords = parseInt(event.target.getAttribute("data-coordinate"));
@@ -29,6 +53,16 @@ const DOM = (() => {
         }
 
     }
+
+    let clickAttack = (event) => {
+        console.log("ATTACK", event.target.getAttribute("data-coordinate"));
+    }
+
+    let hoverAttack = () => {
+
+    }
+
+
 
     let getHorizontal = () => horizontal;
 
@@ -95,33 +129,11 @@ const DOM = (() => {
         return selectedCoordinates;
     }
 
-    let hoverShipPlacement = (event) => {
-        console.log(placeShipLength);
-        let hoveredBoardUnit = event.target;
-        let hoveredCoordinate = parseInt(hoveredBoardUnit.getAttribute("data-coordinate"));
 
-        for(let boardUnit of playerBoardDivs) { 
-            boardUnit.classList.remove("board-div-hovered");
-        }
-
-        let shipPlacement;
-
-        if (horizontal) {
-            shipPlacement = getShipPlacementH(hoveredBoardUnit, hoveredCoordinate);
-        } else {
-            shipPlacement = getShipPlacementV(hoveredBoardUnit, hoveredCoordinate);
-        }
-
-        for(const coord of shipPlacement) {
-            let boardUnit = playerBoardDOM.querySelector(`[data-coordinate="${coord}"]`);
-            boardUnit.classList.add("board-div-hovered");
-        }
-        // console.log(toBeSelectedCoordinates);
-    }
 
     let initialization = () => {
         playerBoardDOM= document.querySelector(".player-board");
-        // computerBoardDOM= document.querySelector(".computer-board");
+        computerBoardDOM= document.querySelector(".computer-board");
         let rotateDirectionBtn = document.querySelector(".rotate-direction-ship");
         
         rotateDirectionBtn.addEventListener("click", toggleHorizontal);
@@ -129,9 +141,9 @@ const DOM = (() => {
         for (let i=0; i < 10; i++) {
             for(let j=0; j < 10; j++) {
                 let playerBoardDiv = document.createElement("div");
-                // let computerBoardDiv = document.createElement("div");
+                let computerBoardDiv = document.createElement("div");
                 playerBoardDiv.setAttribute("class", "board-div player-board-div");
-                // computerBoardDiv.setAttribute("class", "board-div computer-board-div");
+                computerBoardDiv.setAttribute("class", "board-div computer-board-div");
     
                 let dataCoordinateValue = String((i*10)+(j+1));
                 if (dataCoordinateValue < 10) {
@@ -140,29 +152,41 @@ const DOM = (() => {
 
 
                 playerBoardDiv.setAttribute("data-coordinate", dataCoordinateValue);
-                // computerBoardDiv.setAttribute("data-coordinate", dataCoordinateValue);
+                computerBoardDiv.setAttribute("data-coordinate", dataCoordinateValue);
                 playerBoardDiv.setAttribute("data-row", i+1);
-                // computerBoardDiv.setAttribute("data-row", i+1);
+                computerBoardDiv.setAttribute("data-row", i+1);
                 playerBoardDiv.setAttribute("data-col", j+1);
-                // computerBoardDiv.setAttribute("data-col", j+1);
+                computerBoardDiv.setAttribute("data-col", j+1);
                 playerBoardDOM.appendChild(playerBoardDiv);
-                // computerBoardDOM.appendChild(computerBoardDiv);
+                computerBoardDOM.appendChild(computerBoardDiv);
             }
         }
         
 
         // store the newly generated board units 
         playerBoardDivs = document.querySelectorAll(".player-board-div");
-        initializeHoverAndPlaceShips();
+        computerBoardDivs = document.querySelectorAll(".computer-board-div");
+        beginPlaceDownStage();
     }
 
-    let initializeHoverAndPlaceShips = () => {
+    let beginPlaceDownStage = () => {
         for(let i=0; i < 100; i++) {            
             playerBoardDivs[i].addEventListener("mouseover", hoverShipPlacement);
-            playerBoardDivs[i].addEventListener("click", clickBoardUnit);
+            playerBoardDivs[i].addEventListener("click", clickShipPlacement);
         }        
     }
+
+    let beginCombatStage = () => {
+        for(let i=0; i < 100; i++) {
+            playerBoardDivs[i].removeEventListener("mouseover", hoverShipPlacement);
+            playerBoardDivs[i].removeEventListener("click", clickShipPlacement);  
+            computerBoardDivs[i].addEventListener("click", clickAttack);
+            computerBoardDivs[i].addEventListener("click", hoverAttack);
+        }
+    }
+    
     return {
+        beginCombatStage,
         initialization,
         toggleHorizontal,
         getHorizontal,
