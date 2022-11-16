@@ -23,6 +23,10 @@ body {
     text-align: center;
 }
 
+.current-place-ship {
+    text-decoration: underline;
+}
+
 .rotate-direction-ship {
     /* change these dimensions later */
     font-size: 1rem;

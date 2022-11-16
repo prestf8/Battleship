@@ -6,6 +6,10 @@ const DOM = (() => {
     let playerBoardDivs, computerBoardDivs;
     let horizontal = true;
 
+    let setCurrentPlaceShipLabelDOM = (name) => {
+        document.querySelector(".current-place-ship").textContent = name;
+    }
+
     let hoverShipPlacement = (event) => {
         console.log(placeShipLength);
         let hoveredBoardUnit = event.target;
@@ -192,6 +196,7 @@ const DOM = (() => {
     }
     
     return {
+        setCurrentPlaceShipLabelDOM,
         beginCombatStage,
         initialization,
         toggleHorizontal,

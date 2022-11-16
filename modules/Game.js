@@ -50,18 +50,19 @@ const Game = (() => {
         
         if (!placeDownStage) {
             return;
-            // THEN REMOVE EVENT LISTENERS AND REDIRECT CLICKS TO ATTACKING
         }
         
         let shipData = shipsToBePlaced.shift();
         let playerGameboard = player.getGameboard();
         let shipToBePlaced = Ship(shipData.name, shipData.size);
 
+        
         for(let coords of shipPlacement) {
             playerGameboard.placeShip(parseInt(coords), shipToBePlaced);
         }
-
+        
         if (shipsToBePlaced.length > 0) {
+            DOM.setCurrentPlaceShipLabelDOM(shipsToBePlaced[0].name);
             DOM.setPlaceShipLength(shipsToBePlaced[0].size);
         } else {
             placeDownStage = false;
