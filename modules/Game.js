@@ -5,10 +5,7 @@ import DOM from "./DOM.js";
 const Game = (() => {
 
     let player, computer;
-
-    // stages
-    let placeDownStage = true;
-    let combatStage = false;
+    let stage = "place";
 
     let shipsToBePlaced = [
         {
@@ -31,30 +28,46 @@ const Game = (() => {
             name: "Patrol Boat",
             size: 2,
         }
-    ]
+    ];
+
+    let initialization = () => {
+        // Initialize DOM
+        DOM.initialization();
+
+        // Initialize Player
+        player = Player();
+        player.initialization();
+    }
+
 
     let checkIfCanPlaceDownShip = (shipPlacement) => {
-        // Conditions: Placement cannot be already occupied & Ship placement cannot be off the board
+        // Condition: Placement cannot be already occupied
         for(let placement of shipPlacement) {
             if (player.getGameboard().checkIfOccupied(parseInt(placement))) {
                 return;
             }
         }
+
+        // Condition: Placement cannot be off the board
         if (shipPlacement.length !== DOM.getPlaceShipLength()) {
             return;
         }
+
+        // If these two conditions pass then you can place down ship
         return true;
     }
     
     let placeDownShip = (shipPlacement) => {
         
-        if (!placeDownStage) {
+        if (stage !== "place") {
             return;
         }
         
-        let shipData = shipsToBePlaced.shift();
+        let currentShipData = shipsToBePlaced.shift();
         let playerGameboard = player.getGameboard();
-        let shipToBePlaced = Ship(shipData.name, shipData.size);
+
+        // ship object to be placed
+        let shipToBePlaced = Ship(currentShipData.name, currentShipData.size);
 
         
         for(let coords of shipPlacement) {
@@ -65,17 +78,10 @@ const Game = (() => {
             DOM.setCurrentPlaceShipLabelDOM(shipsToBePlaced[0].name);
             DOM.setPlaceShipLength(shipsToBePlaced[0].size);
         } else {
-            placeDownStage = false;
-            combatStage = true;
+            stage = "combat"
             DOM.beginCombatStage();
         }
 
-    }
-
-    let initialization = () => {
-        DOM.initialization();
-        player = Player();
-        player.initialization();
     }
 
     return {
@@ -83,8 +89,6 @@ const Game = (() => {
         initialization,
         checkIfCanPlaceDownShip
     }
-
-    
 
 })();
 
