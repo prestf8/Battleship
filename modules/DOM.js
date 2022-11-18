@@ -2,57 +2,119 @@ import Game from "./Game.js";
 
 const DOM = (() => {
     let playerBoardDOM, computerBoardDOM;
-    let placeShipLength = 5; // Length of ship to place
-    let playerBoardDivs, computerBoardDivs;
+    let placeShipLength = 5; // Length of ship to place (initial value: length of Carrier ship)
     let horizontal = true;
 
-    let setCurrentPlaceShipLabelDOM = (name) => {
+    let initialization = () => {
+        playerBoardDOM = document.querySelector(".player-board");
+        computerBoardDOM= document.querySelector(".computer-board");
+        let rotatePlacementBtn = document.querySelector(".rotate-direction-ship");
+        
+        // Event "click" on button for rotating ship placement 
+        rotatePlacementBtn.addEventListener("click", toggleHorizontal);
+        
+        for (let i=0; i < 10; i++) {
+            for(let j=0; j < 10; j++) {
+                let playerBoardUnit = document.createElement("div");
+                let computerBoardUnit = document.createElement("div");
+                playerBoardUnit.setAttribute("class", "board-div player-board-div");
+                computerBoardUnit.setAttribute("class", "board-div computer-board-div");
+    
+                // coordinate for the board unit
+                let dataCoordinateValue = String((i*10)+(j+1));
+                if (dataCoordinateValue < 10) {
+                    dataCoordinateValue = '0' + dataCoordinateValue;
+                }
+
+                // set coordinates
+                playerBoardUnit.setAttribute("data-coordinate", dataCoordinateValue);
+                computerBoardUnit.setAttribute("data-coordinate", dataCoordinateValue);
+
+                // set rows
+                playerBoardUnit.setAttribute("data-row", i+1);
+                computerBoardUnit.setAttribute("data-row", i+1);
+
+                // set columns
+                playerBoardUnit.setAttribute("data-col", j+1);
+                computerBoardUnit.setAttribute("data-col", j+1);
+                playerBoardDOM.appendChild(playerBoardUnit);
+                computerBoardDOM.appendChild(computerBoardUnit);
+            }
+        }
+        
+
+        beginPlaceDownStage();
+    }
+
+    // GET METHODS
+    let getPlaceShipLength = () => placeShipLength;
+
+    let getHorizontal = () => horizontal;
+
+    // 
+
+    let setPlaceShipLabel = (name) => {
         document.querySelector(".current-place-ship").textContent = name;
     }
 
     let hoverShipPlacement = (event) => {
-        console.log(placeShipLength);
+        
+        let shipPlacement;
+        let playerBoardUnits = document.querySelectorAll(".player-board-div");
+        // Hovered Unit
         let hoveredBoardUnit = event.target;
+
+        // Hovered Unit Coordinate
         let hoveredCoordinate = parseInt(hoveredBoardUnit.getAttribute("data-coordinate"));
 
-        for(let boardUnit of playerBoardDivs) { 
+        // Reset DOM Hover Styling for every unit
+        for(let boardUnit of playerBoardUnits) { 
             boardUnit.classList.remove("board-div-hovered");
         }
 
-        let shipPlacement;
 
+        // Getting ship placement coordinates (based on whether placement is horizontal and based on hovered coordinate)
         if (horizontal) {
             shipPlacement = getShipPlacementH(hoveredBoardUnit, hoveredCoordinate);
         } else {
             shipPlacement = getShipPlacementV(hoveredBoardUnit, hoveredCoordinate);
         }
 
+        // Styling ship placement 
         for(const coord of shipPlacement) {
             let boardUnit = playerBoardDOM.querySelector(`[data-coordinate="${coord}"]`);
             boardUnit.classList.add("board-div-hovered");
         }
-        // console.log(toBeSelectedCoordinates);
     }
 
     let clickShipPlacement = (event) => {
-        // console.log(event.target.getAttribute("data-coordinate"))
+
+        // Clicked Unit
         let clickedBoardUnit = event.target;
+
+        // Clicked Unit Coordinate
         let clickedCoords = parseInt(event.target.getAttribute("data-coordinate"));
         let shipPlacement;
         
+        // Getting ship placement coordinates (based on whether placement is horizontal and based on hovered coordinate)
         if (horizontal) { 
             shipPlacement = getShipPlacementH(clickedBoardUnit, clickedCoords);
         } else {
             shipPlacement = getShipPlacementV(clickedBoardUnit, clickedCoords);
         }
         
+        // Check if place down ship is allowed 
         let canPlaceDownShip = Game.checkIfCanPlaceDownShip(shipPlacement);
+
+        // Only run this block if place down ship is allowed
         if (canPlaceDownShip) {
+            // Add styling for coordinates where ships were placed down
             for(let coords of shipPlacement) {
                 let boardUnitDOM = playerBoardDOM.querySelector(`.player-board-div[data-coordinate='${coords}']`);
                 boardUnitDOM.classList.add("board-div-selected");
             }
 
+            // Place Down Ship
             Game.placeDownShip(shipPlacement);
         }
 
@@ -62,20 +124,12 @@ const DOM = (() => {
         console.log("ATTACK", event.target.getAttribute("data-coordinate"));
     }
 
-    let hoverAttack = () => {
-
-    }
-
-
-
-    let getHorizontal = () => horizontal;
-
     let setPlaceShipLength = (length) => {
         placeShipLength = length;
     }
 
-    let getPlaceShipLength = () => placeShipLength;
 
+    // toggle direction of place ship 
     let toggleHorizontal = () => {
         horizontal = !horizontal;
     }
@@ -133,54 +187,18 @@ const DOM = (() => {
         return selectedCoordinates;
     }
 
-
-
-    let initialization = () => {
-        playerBoardDOM= document.querySelector(".player-board");
-        computerBoardDOM= document.querySelector(".computer-board");
-        let rotateDirectionBtn = document.querySelector(".rotate-direction-ship");
-        
-        rotateDirectionBtn.addEventListener("click", toggleHorizontal);
-        
-        for (let i=0; i < 10; i++) {
-            for(let j=0; j < 10; j++) {
-                let playerBoardDiv = document.createElement("div");
-                let computerBoardDiv = document.createElement("div");
-                playerBoardDiv.setAttribute("class", "board-div player-board-div");
-                computerBoardDiv.setAttribute("class", "board-div computer-board-div");
-    
-                let dataCoordinateValue = String((i*10)+(j+1));
-                if (dataCoordinateValue < 10) {
-                    dataCoordinateValue = '0' + dataCoordinateValue;
-                }
-
-
-                playerBoardDiv.setAttribute("data-coordinate", dataCoordinateValue);
-                computerBoardDiv.setAttribute("data-coordinate", dataCoordinateValue);
-                playerBoardDiv.setAttribute("data-row", i+1);
-                computerBoardDiv.setAttribute("data-row", i+1);
-                playerBoardDiv.setAttribute("data-col", j+1);
-                computerBoardDiv.setAttribute("data-col", j+1);
-                playerBoardDOM.appendChild(playerBoardDiv);
-                computerBoardDOM.appendChild(computerBoardDiv);
-            }
-        }
-        
-
-        // store the newly generated board units 
-        playerBoardDivs = document.querySelectorAll(".player-board-div");
-        computerBoardDivs = document.querySelectorAll(".computer-board-div");
-        beginPlaceDownStage();
-    }
-
     let beginPlaceDownStage = () => {
+        let playerBoardUnits = playerBoardDOM.querySelectorAll(".player-board-div");
         for(let i=0; i < 100; i++) {            
-            playerBoardDivs[i].addEventListener("mouseover", hoverShipPlacement);
-            playerBoardDivs[i].addEventListener("click", clickShipPlacement);
+            playerBoardUnits[i].addEventListener("mouseover", hoverShipPlacement);
+            playerBoardUnits[i].addEventListener("click", clickShipPlacement);
         }        
     }
 
     let beginCombatStage = () => {
+
+        let playerBoardUnits = playerBoardDOM.querySelectorAll(".player-board-div");
+        let computerBoardUnits = computerBoardDOM.querySelectorAll(".computer-board-div");
 
         // computer board is now visible
         document.querySelector(".computer-board").classList.remove("invis");
@@ -188,15 +206,16 @@ const DOM = (() => {
         // rotate ship button and the place your label are now off the DOM
         document.querySelector(".place-down-ship-elements").classList.add("invis");
         for(let i=0; i < 100; i++) {
-            playerBoardDivs[i].removeEventListener("mouseover", hoverShipPlacement);
-            playerBoardDivs[i].removeEventListener("click", clickShipPlacement);  
-            computerBoardDivs[i].addEventListener("click", clickAttack);
-            computerBoardDivs[i].addEventListener("click", hoverAttack);
+            playerBoardUnits[i].removeEventListener("mouseover", hoverShipPlacement);
+            playerBoardUnits[i].removeEventListener("click", clickShipPlacement);  
+            computerBoardUnits[i].addEventListener("click", clickAttack);
         }
+
+        Game.computerPlaceStage();
     }
     
     return {
-        setCurrentPlaceShipLabelDOM,
+        setPlaceShipLabel,
         beginCombatStage,
         initialization,
         toggleHorizontal,
