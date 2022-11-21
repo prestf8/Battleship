@@ -115,10 +115,54 @@ const Game = (() => {
     // PLACE DOWN STAGE FOR COMPUTER
     let computerPlaceStage = () => {
         for(let ship of computerShipsToBePlaced) {
-            let direction = Math.floor(Math.random() * 2); // random 0 or 1
-            console.log("ship-dir", direction);
-            console.log("computer: ", ship.name, ship.size);
+            let shipPlacement = [];
+            while(true) {
+                let direction = Math.floor(Math.random() * 2); // random 0 or 1
+                let randomCoordinate = Math.floor(Math.random() * 100) + 1; // Random 1-100;
+
+                if (randomCoordinate < 10) {
+                    randomCoordinate = '0' + randomCoordinate;                
+                }
+
+                console.log(ship.name);
+                if (direction) { // "1" is Vertical
+                    for(let i=0; i < ship.size; i++) {
+                        let onesDigit = randomCoordinate % 10;
+                        let coordinate = String(parseInt(String(randomCoordinate)[0]) + i) + onesDigit;
+                        
+                        if (parseInt(coordinate) <= 100) {
+                            shipPlacement.push(coordinate);
+                        }
+                    }
+                } else { // Direction is "0" which is Horizontal
+                    for(let i=0; i < ship.size; i++) {
+                        let coordinate = randomCoordinate + i;
+
+                        if (parseInt(coordinate) <= 100) {
+                            shipPlacement.push(coordinate);
+                        }
+                    }
+                }
+
+                if (shipPlacement.length == ship.size) {
+                    break; // hopefully breaks out of while loop;
+                }
+
+                shipPlacement = [];
+            }
+            console.log(shipPlacement);    
         }
+
+        // NOW CHECK TO SEE IF COORDINATE HAS A SHIP ALREADY
+        // CHANGE FUNCTION NAME AND CALL THIS FUNCTION IN A COMPUTER INITIALIZATION
+
+
+        // for every ship: 
+            // randomize ship orientation placement
+            // randomize and select board unit
+            // check to see if, current ship can fit on board and hasn't been placed, check both directions
+            // if can be placed then put it in computer object's data
+
     }
 
     return {
