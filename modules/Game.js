@@ -60,6 +60,10 @@ const Game = (() => {
         // Initialize Player
         player = Player();
         player.initialization();
+
+        // Initialize Opponent
+        computer = Player();
+        computer.initialization();
     }
 
 
@@ -112,45 +116,62 @@ const Game = (() => {
 
     }
 
+    let computerGenerateCoordinates = (ship) => {
+        let shipPlacement = [];
+        while(true) {
+            let direction = Math.floor(Math.random() * 2); // random 0 or 1
+            let randomCoordinate = Math.floor(Math.random() * 100) + 1; // Random 1-100;
+
+            if (randomCoordinate < 10) {
+                randomCoordinate = '0' + randomCoordinate;                
+            }
+
+            console.log(randomCoordinate);
+
+            if (direction) { // "1" is Vertical
+                for(let i=0; i < ship.size; i++) {
+                    let onesDigit = randomCoordinate % 10;
+                    let coordinate = String(parseInt(String(randomCoordinate)[0]) + i) + onesDigit;
+                    
+                    if (parseInt(coordinate) <= 100) {
+                        shipPlacement.push(coordinate);
+                    }
+                }
+            } else { // Direction is "0" which is Horizontal
+                for(let i=0; i < ship.size; i++) {
+
+                    let coordinate;
+
+                    if (typeof randomCoordinate === "string") { // only string values are those less than 10
+                        coordinate = parseInt(randomCoordinate) + i;    
+                    } else {
+                        coordinate = randomCoordinate + i;
+                    }
+
+                    if (parseInt(coordinate) <= 100) {
+                        shipPlacement.push(coordinate);
+                    }
+                }
+            }
+
+            if (shipPlacement.length == ship.size) {
+                break; // hopefully breaks out of while loop;
+            }
+
+            shipPlacement = [];
+        }
+        return shipPlacement;
+    } 
+
     // PLACE DOWN STAGE FOR COMPUTER
     let computerPlaceStage = () => {
         for(let ship of computerShipsToBePlaced) {
-            let shipPlacement = [];
-            while(true) {
-                let direction = Math.floor(Math.random() * 2); // random 0 or 1
-                let randomCoordinate = Math.floor(Math.random() * 100) + 1; // Random 1-100;
+            do {
+                computerGenerateCoordinates(ship);
 
-                if (randomCoordinate < 10) {
-                    randomCoordinate = '0' + randomCoordinate;                
-                }
-
-                console.log(ship.name);
-                if (direction) { // "1" is Vertical
-                    for(let i=0; i < ship.size; i++) {
-                        let onesDigit = randomCoordinate % 10;
-                        let coordinate = String(parseInt(String(randomCoordinate)[0]) + i) + onesDigit;
-                        
-                        if (parseInt(coordinate) <= 100) {
-                            shipPlacement.push(coordinate);
-                        }
-                    }
-                } else { // Direction is "0" which is Horizontal
-                    for(let i=0; i < ship.size; i++) {
-                        let coordinate = randomCoordinate + i;
-
-                        if (parseInt(coordinate) <= 100) {
-                            shipPlacement.push(coordinate);
-                        }
-                    }
-                }
-
-                if (shipPlacement.length == ship.size) {
-                    break; // hopefully breaks out of while loop;
-                }
-
-                shipPlacement = [];
-            }
-            console.log(shipPlacement);    
+                // IF coordinates are already occupied, BREAK
+                break;
+            } while (true)
         }
 
         // NOW CHECK TO SEE IF COORDINATE HAS A SHIP ALREADY
