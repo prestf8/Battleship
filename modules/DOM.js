@@ -212,6 +212,7 @@ const DOM = (() => {
         }
 
         Game.computerPlaceStage();
+        Game.beginGameCombatStage();
     }
     
     return {

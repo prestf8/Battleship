@@ -116,6 +116,14 @@ const Game = (() => {
 
     }
 
+    let beginGameCombatStage = () => {
+        player.getGameboard().
+
+    }
+
+
+    // COMPUTER STUFF
+
     let computerGenerateCoordinates = (ship) => {
         let shipPlacement = [];
         while(true) {
@@ -126,15 +134,14 @@ const Game = (() => {
                 randomCoordinate = '0' + randomCoordinate;                
             }
 
-            console.log(randomCoordinate);
 
             if (direction) { // "1" is Vertical
                 for(let i=0; i < ship.size; i++) {
                     let onesDigit = randomCoordinate % 10;
                     let coordinate = String(parseInt(String(randomCoordinate)[0]) + i) + onesDigit;
                     
-                    if (parseInt(coordinate) <= 100) {
-                        shipPlacement.push(coordinate);
+                    if (parseInt(coordinate) < 100) { 
+                        shipPlacement.push(parseInt(coordinate));
                     }
                 }
             } else { // Direction is "0" which is Horizontal
@@ -148,7 +155,11 @@ const Game = (() => {
                         coordinate = randomCoordinate + i;
                     }
 
-                    if (parseInt(coordinate) <= 100) {
+                    let coordRow = parseInt(String(randomCoordinate)[0]);
+
+                    
+
+                    if (parseInt(coordinate) < 100 && parseInt(String(coordinate)[0]) == coordRow) {
                         shipPlacement.push(coordinate);
                     }
                 }
@@ -166,12 +177,21 @@ const Game = (() => {
     // PLACE DOWN STAGE FOR COMPUTER
     let computerPlaceStage = () => {
         for(let ship of computerShipsToBePlaced) {
-            do {
-                computerGenerateCoordinates(ship);
+            let computerShip = Ship(ship.name, ship.size);
+            let shipPlacement = computerGenerateCoordinates(ship);
+            let cantPlace = computer.getGameboard().checkIfCoordinatesOccupied(shipPlacement);
 
-                // IF coordinates are already occupied, BREAK
-                break;
-            } while (true)
+            while(cantPlace) {
+                shipPlacement = computerGenerateCoordinates(ship);
+                cantPlace = computer.getGameboard().checkIfCoordinatesOccupied(shipPlacement);
+            }
+
+            console.log(shipPlacement);
+
+            for(let coords of shipPlacement) {
+                computer.getGameboard().placeShip(parseInt(coords), computerShip);
+            }
+
         }
 
         // NOW CHECK TO SEE IF COORDINATE HAS A SHIP ALREADY
@@ -183,10 +203,13 @@ const Game = (() => {
             // randomize and select board unit
             // check to see if, current ship can fit on board and hasn't been placed, check both directions
             // if can be placed then put it in computer object's data
+            
 
+            computer.getGameboard().printBoard();
     }
 
     return {
+        beginGameCombatStage,
         computerPlaceStage,
         placeDownShip,
         initialization,

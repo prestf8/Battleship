@@ -29,6 +29,19 @@ const Gameboard = () => {
     return false;
   }
 
+  // plural version of the function above
+  let checkIfCoordinatesOccupied = (shipPlacement) => {
+    for(let coords of shipPlacement) {
+      coords = parseInt(coords);
+
+      if (board[coords]) {
+        return true;
+      }
+    }
+
+    return false; 
+  }
+
   let checkIfHitAlready = (coordinate) => {
     if (board[coordinate] == "HIT" || board[coordinate] == "MISS") {
       return true;
@@ -66,8 +79,45 @@ const Gameboard = () => {
 
   let isAllSunk = () => remainingShips.length === 0;
 
+  let printBoard = () => {
+    let result = '';
+    for(let i=0; i < 10; i++) {
+      let row = '';
+      for(let j=0; j < 10; j++) {
+        if (board[i*10+j]) {
+          let ship = board[i*10+j];
+          let shipType = ship.getType();
+          if (shipType == "Carrier") {
+            row += ' | ' + 'C';
+          } else if (shipType == "Battleship") {
+            row += ' | ' + 'B';
+          } else if (shipType == "Destroyer") {
+            row += ' | ' + 'D';
+          } else if (shipType == "Submarine") {
+            row += ' | ' + 'S';
+          } else if (shipType == "Patrol Boat") {
+            row += ' | ' + 'P';
+          }
+
+
+        } else {
+          row += ' | ' + 'N';
+        }
+        // board[]
+      }
+      row += '\n';  
+      result += row;
+    }
+    console.log(result);
+    // for(let coords of board) {
+      // console.log(coords);
+    // }
+  }
+
   return {
+    printBoard,
     checkIfOccupied,
+    checkIfCoordinatesOccupied,
     getBoard,
     initializeArray,
     placeShip,
