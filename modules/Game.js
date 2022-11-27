@@ -117,7 +117,8 @@ const Game = (() => {
     }
 
     let beginGameCombatStage = () => {
-        player.getGameboard().
+        console.log("Player");
+        player.getGameboard().printBoard();
 
     }
 
@@ -127,43 +128,51 @@ const Game = (() => {
     let computerGenerateCoordinates = (ship) => {
         let shipPlacement = [];
         while(true) {
-            let direction = Math.floor(Math.random() * 2); // random 0 or 1
-            let randomCoordinate = Math.floor(Math.random() * 100) + 1; // Random 1-100;
+            let direction = Math.floor(Math.random() * 2); // random selection 0 (horizontal) or 1 (vertical)
+            let randomOneToHundred = Math.floor(Math.random()*100) + 1; // Random Number from 1-100
+            let randomCoordinate = (randomOneToHundred < 10) ? ('0' + randomOneToHundred) : String(randomOneToHundred); // Coordinate (STRING)
+            let tensDigit = randomCoordinate[0]; 
+            let onesDigit = randomCoordinate[1];
 
-            if (randomCoordinate < 10) {
-                randomCoordinate = '0' + randomCoordinate;                
-            }
+            for(let i=0; i < ship.size; i++) {
+                let coordinate = direction ? parseInt((parseInt(tensDigit) + i) + onesDigit) : parseInt(randomCoordinate) + i;
 
-
-            if (direction) { // "1" is Vertical
-                for(let i=0; i < ship.size; i++) {
-                    let onesDigit = randomCoordinate % 10;
-                    let coordinate = String(parseInt(String(randomCoordinate)[0]) + i) + onesDigit;
-                    
-                    if (parseInt(coordinate) < 100) { 
-                        shipPlacement.push(parseInt(coordinate));
-                    }
-                }
-            } else { // Direction is "0" which is Horizontal
-                for(let i=0; i < ship.size; i++) {
-
-                    let coordinate;
-
-                    if (typeof randomCoordinate === "string") { // only string values are those less than 10
-                        coordinate = parseInt(randomCoordinate) + i;    
-                    } else {
-                        coordinate = randomCoordinate + i;
-                    }
-
-                    let coordRow = parseInt(String(randomCoordinate)[0]);
-
-                    
-
-                    if (parseInt(coordinate) < 100 && parseInt(String(coordinate)[0]) == coordRow) {
-                        shipPlacement.push(coordinate);
-                    }
+                if (coordinate < 100) {
+                    shipPlacement.push(coordinate);
                 }
             }
+
+            // THE ERROR: TO CHECK IF COORDINATE IS ON THE SAME ROW ALGORITHM IS WRONG
+
+            // if (direction) { // "1" is Vertical
+            //     for(let i=0; i < ship.size; i++) {
+            //         let onesDigit = randomCoordinate % 10;
+            //         let coordinate = String(parseInt(String(randomCoordinate)[0]) + i) + onesDigit;
+                    
+            //         if (parseInt(coordinate) < 100) { 
+            //             shipPlacement.push(parseInt(coordinate));
+            //         }
+            //     }
+            // } else { // Direction is "0" which is Horizontal
+            //     for(let i=0; i < ship.size; i++) {
+
+            //         let coordinate;
+
+            //         if (typeof randomCoordinate === "string") { // only string values are those less than 10
+            //             coordinate = parseInt(randomCoordinate) + i;    
+            //         } else {
+            //             coordinate = randomCoordinate + i;
+            //         }
+
+            //         let coordRow = parseInt(String(randomCoordinate)[0]);
+
+                    
+
+            //         if (parseInt(coordinate) < 100 && parseInt(String(coordinate)[0]) == coordRow) {
+            //             shipPlacement.push(coordinate);
+            //         }
+            //     }
+            // }
 
             if (shipPlacement.length == ship.size) {
                 break; // hopefully breaks out of while loop;
