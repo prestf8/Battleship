@@ -117,9 +117,6 @@ const Game = (() => {
     }
 
     let beginGameCombatStage = () => {
-        console.log("Player");
-        player.getGameboard().printBoard();
-
     }
 
 
@@ -133,46 +130,24 @@ const Game = (() => {
             let randomCoordinate = (randomOneToHundred < 10) ? ('0' + randomOneToHundred) : String(randomOneToHundred); // Coordinate (STRING)
             let tensDigit = randomCoordinate[0]; 
             let onesDigit = randomCoordinate[1];
+            let correspondingTens = parseInt(tensDigit + '9') + 1; // 10, 20..., 100 can be on the same rows as 08, 19, 95, respectively...
 
             for(let i=0; i < ship.size; i++) {
                 let coordinate = direction ? parseInt((parseInt(tensDigit) + i) + onesDigit) : parseInt(randomCoordinate) + i;
 
-                if (coordinate < 100) {
+                // 01-10
+                // 11-20
+                // ...
+                // 91-100
+
+
+
+                if (coordinate <= 100 && direction) { // FOR VERTICAL 
+                    shipPlacement.push(coordinate);
+                } else if ((coordinate <= 100) && (!direction) && ((String(coordinate)[0] == tensDigit) || (coordinate === correspondingTens))) {
                     shipPlacement.push(coordinate);
                 }
             }
-
-            // THE ERROR: TO CHECK IF COORDINATE IS ON THE SAME ROW ALGORITHM IS WRONG
-
-            // if (direction) { // "1" is Vertical
-            //     for(let i=0; i < ship.size; i++) {
-            //         let onesDigit = randomCoordinate % 10;
-            //         let coordinate = String(parseInt(String(randomCoordinate)[0]) + i) + onesDigit;
-                    
-            //         if (parseInt(coordinate) < 100) { 
-            //             shipPlacement.push(parseInt(coordinate));
-            //         }
-            //     }
-            // } else { // Direction is "0" which is Horizontal
-            //     for(let i=0; i < ship.size; i++) {
-
-            //         let coordinate;
-
-            //         if (typeof randomCoordinate === "string") { // only string values are those less than 10
-            //             coordinate = parseInt(randomCoordinate) + i;    
-            //         } else {
-            //             coordinate = randomCoordinate + i;
-            //         }
-
-            //         let coordRow = parseInt(String(randomCoordinate)[0]);
-
-                    
-
-            //         if (parseInt(coordinate) < 100 && parseInt(String(coordinate)[0]) == coordRow) {
-            //             shipPlacement.push(coordinate);
-            //         }
-            //     }
-            // }
 
             if (shipPlacement.length == ship.size) {
                 break; // hopefully breaks out of while loop;
@@ -186,7 +161,7 @@ const Game = (() => {
     // PLACE DOWN STAGE FOR COMPUTER
     let computerPlaceStage = () => {
         for(let ship of computerShipsToBePlaced) {
-            let computerShip = Ship(ship.name, ship.size);
+            let shipObj = Ship(ship.name, ship.size);
             let shipPlacement = computerGenerateCoordinates(ship);
             let cantPlace = computer.getGameboard().checkIfCoordinatesOccupied(shipPlacement);
 
@@ -198,23 +173,12 @@ const Game = (() => {
             console.log(shipPlacement);
 
             for(let coords of shipPlacement) {
-                computer.getGameboard().placeShip(parseInt(coords), computerShip);
+                computer.getGameboard().placeShip(parseInt(coords), shipObj);
             }
 
         }
 
-        // NOW CHECK TO SEE IF COORDINATE HAS A SHIP ALREADY
-        // CHANGE FUNCTION NAME AND CALL THIS FUNCTION IN A COMPUTER INITIALIZATION
-
-
-        // for every ship: 
-            // randomize ship orientation placement
-            // randomize and select board unit
-            // check to see if, current ship can fit on board and hasn't been placed, check both directions
-            // if can be placed then put it in computer object's data
-            
-
-            computer.getGameboard().printBoard();
+        computer.getGameboard().printBoard();
     }
 
     return {

@@ -50,7 +50,7 @@ const Gameboard = () => {
   }
 
   let placeShip = (coordinate, ship) => {
-    board[coordinate] = ship;
+    board[coordinate-1] = ship;
     ship.setLocation(coordinate);
   };
 
