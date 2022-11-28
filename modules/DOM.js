@@ -2,7 +2,6 @@ import Game from "./Game.js";
 
 const DOM = (() => {
     let playerBoardDOM, computerBoardDOM;
-    let placeShipLength = 5; // Length of ship to place (initial value: length of Carrier ship)
     let horizontal = true;
 
     let initialization = () => {
@@ -30,13 +29,6 @@ const DOM = (() => {
                 playerBoardUnit.setAttribute("data-coordinate", dataCoordinateValue);
                 computerBoardUnit.setAttribute("data-coordinate", dataCoordinateValue);
 
-                // set rows
-                playerBoardUnit.setAttribute("data-row", i+1);
-                computerBoardUnit.setAttribute("data-row", i+1);
-
-                // set columns
-                playerBoardUnit.setAttribute("data-col", j+1);
-                computerBoardUnit.setAttribute("data-col", j+1);
                 playerBoardDOM.appendChild(playerBoardUnit);
                 computerBoardDOM.appendChild(computerBoardUnit);
             }
@@ -134,6 +126,14 @@ const DOM = (() => {
         horizontal = !horizontal;
     }
 
+    // IN THE WORKS (COMBINED getShipPlacementH AND getShipPlacementV)
+    let playerGenerateCoordinates = (boardUnit, baseCoordinate) {
+        let generatedCoords = [];
+
+        let placeShipLength = (Game.getShipsToBePlaced()[0]).size; // Length of current ship to place 
+
+    }
+
     // hover ship placement for horizontal ship placement functionality
     let getShipPlacementH = (boardUnit, hoveredCoordinate) => {
         let selectedCoordinates = [];
@@ -159,7 +159,6 @@ const DOM = (() => {
         let hoveredCoordinateStr = String(hoveredCoordinate);
 
         let selectedCoordinates = [];
-        let col = boardUnit.getAttribute("data-col");
 
         if (parseInt(hoveredCoordinate) < 10) {
             hoveredCoordinateStr = '0' + hoveredCoordinateStr;

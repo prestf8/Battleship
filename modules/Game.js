@@ -66,6 +66,8 @@ const Game = (() => {
         computer.initialization();
     }
 
+    let getShipsToBePlaced = () => shipsToBePlaced;
+
 
     let checkIfCanPlaceDownShip = (shipPlacement) => {
         // Condition: Placement cannot be already occupied
@@ -186,6 +188,7 @@ const Game = (() => {
         computerPlaceStage,
         placeDownShip,
         initialization,
+        getShipsToBePlaced,
         checkIfCanPlaceDownShip
     }
 
