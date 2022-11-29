@@ -78,7 +78,7 @@ const Game = (() => {
         }
 
         // Condition: Placement cannot be off the board
-        if (shipPlacement.length !== DOM.getPlaceShipLength()) {
+        if (shipPlacement.length !== (shipsToBePlaced[0].size)) {
             return;
         }
 
@@ -112,9 +112,8 @@ const Game = (() => {
             return;
         }
 
-        // Alter place ship label and change length of the next ship to be placed
+        // Alter place ship label 
         DOM.setPlaceShipLabel(shipsToBePlaced[0].name);
-        DOM.setPlaceShipLength(shipsToBePlaced[0].size);
 
     }
 

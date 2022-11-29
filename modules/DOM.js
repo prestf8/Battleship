@@ -21,6 +21,8 @@ const DOM = (() => {
     
                 // coordinate for the board unit
                 let dataCoordinateValue = String((i*10)+(j+1));
+
+                // Prefix '0' for those under 10
                 if (dataCoordinateValue < 10) {
                     dataCoordinateValue = '0' + dataCoordinateValue;
                 }
@@ -38,9 +40,6 @@ const DOM = (() => {
         beginPlaceDownStage();
     }
 
-    // GET METHODS
-    let getPlaceShipLength = () => placeShipLength;
-
     let getHorizontal = () => horizontal;
 
     // 
@@ -51,13 +50,9 @@ const DOM = (() => {
 
     let hoverShipPlacement = (event) => {
         
-        let shipPlacement;
         let playerBoardUnits = document.querySelectorAll(".player-board-div");
         // Hovered Unit
         let hoveredBoardUnit = event.target;
-
-        // Hovered Unit Coordinate
-        let hoveredCoordinate = parseInt(hoveredBoardUnit.getAttribute("data-coordinate"));
 
         // Reset DOM Hover Styling for every unit
         for(let boardUnit of playerBoardUnits) { 
@@ -66,11 +61,7 @@ const DOM = (() => {
 
 
         // Getting ship placement coordinates (based on whether placement is horizontal and based on hovered coordinate)
-        if (horizontal) {
-            shipPlacement = getShipPlacementH(hoveredBoardUnit, hoveredCoordinate);
-        } else {
-            shipPlacement = getShipPlacementV(hoveredBoardUnit, hoveredCoordinate);
-        }
+        let shipPlacement = playerGenerateCoordinates(hoveredBoardUnit);
 
         // Styling ship placement 
         for(const coord of shipPlacement) {
@@ -84,16 +75,8 @@ const DOM = (() => {
         // Clicked Unit
         let clickedBoardUnit = event.target;
 
-        // Clicked Unit Coordinate
-        let clickedCoords = parseInt(event.target.getAttribute("data-coordinate"));
-        let shipPlacement;
-        
         // Getting ship placement coordinates (based on whether placement is horizontal and based on hovered coordinate)
-        if (horizontal) { 
-            shipPlacement = getShipPlacementH(clickedBoardUnit, clickedCoords);
-        } else {
-            shipPlacement = getShipPlacementV(clickedBoardUnit, clickedCoords);
-        }
+        let shipPlacement = playerGenerateCoordinates(clickedBoardUnit);
         
         // Check if place down ship is allowed 
         let canPlaceDownShip = Game.checkIfCanPlaceDownShip(shipPlacement);
@@ -116,75 +99,84 @@ const DOM = (() => {
         console.log("ATTACK", event.target.getAttribute("data-coordinate"));
     }
 
-    let setPlaceShipLength = (length) => {
-        placeShipLength = length;
-    }
-
-
     // toggle direction of place ship 
     let toggleHorizontal = () => {
         horizontal = !horizontal;
     }
 
     // IN THE WORKS (COMBINED getShipPlacementH AND getShipPlacementV)
-    let playerGenerateCoordinates = (boardUnit, baseCoordinate) {
+    let playerGenerateCoordinates = (boardUnit) => {
         let generatedCoords = [];
-
         let placeShipLength = (Game.getShipsToBePlaced()[0]).size; // Length of current ship to place 
+        let baseCoordinate = boardUnit.getAttribute("data-coordinate");
+        let tensDigit = baseCoordinate[0];
+        let onesDigit = baseCoordinate[1];
+        let correspondingTens = parseInt(tensDigit + '9') + 1; // 10, 20..., 100 can be on the same rows as 08, 19, 95, respectively...
 
-    }
 
-    // hover ship placement for horizontal ship placement functionality
-    let getShipPlacementH = (boardUnit, hoveredCoordinate) => {
-        let selectedCoordinates = [];
-        let row = boardUnit.getAttribute("data-row");
-        for(let i=0; i < placeShipLength; i++) { // placeShipLength - 1 not including hoveredCoordinate
-            let selectedCoordinate = hoveredCoordinate + i; 
+        for(let i=0; i < placeShipLength; i++) {
+            let generatedCoordinate = horizontal ?  (parseInt(baseCoordinate) + i) : (parseInt((parseInt(tensDigit) + i) + onesDigit));
 
-            if (selectedCoordinate < 10) {
-                selectedCoordinate = '0' + selectedCoordinate;
-            }
-
-            let selectedCoordinateDOM = playerBoardDOM.querySelector(`.board-div[data-coordinate='${selectedCoordinate}']`)
-
-            // selected coordinate shouldnt be off the board && should be on the same row
-            if (selectedCoordinateDOM && row == selectedCoordinateDOM.getAttribute("data-row")) { 
-                selectedCoordinates.push(String(selectedCoordinate));
+            if (generatedCoordinate <= 100 && !horizontal) { // FOR VERTICAL 
+                generatedCoords.push(generatedCoordinate);
+            } else if ((generatedCoordinate <= 100) && (horizontal) && ((String(generatedCoordinate)[0] == tensDigit) || (generatedCoordinate === correspondingTens))) {
+                generatedCoords.push(generatedCoordinate);
             }
         }
-        return selectedCoordinates;
+        return generatedCoords;
     }
-    // hover ship placement for vertical ship placement functionality
-    let getShipPlacementV = (boardUnit, hoveredCoordinate) => {
-        let hoveredCoordinateStr = String(hoveredCoordinate);
 
-        let selectedCoordinates = [];
+    // // hover ship placement for horizontal ship placement functionality
+    // let getShipPlacementH = (boardUnit, hoveredCoordinate) => {
+    //     let selectedCoordinates = [];
+    //     let row = boardUnit.getAttribute("data-row");
+    //     for(let i=0; i < placeShipLength; i++) { // placeShipLength - 1 not including hoveredCoordinate
+    //         let selectedCoordinate = hoveredCoordinate + i; 
 
-        if (parseInt(hoveredCoordinate) < 10) {
-            hoveredCoordinateStr = '0' + hoveredCoordinateStr;
-        }
+    //         if (selectedCoordinate < 10) {
+    //             selectedCoordinate = '0' + selectedCoordinate;
+    //         }
 
-        let hoveredCoordinateCol = hoveredCoordinate % 10;
+    //         let selectedCoordinateDOM = playerBoardDOM.querySelector(`.board-div[data-coordinate='${selectedCoordinate}']`)
 
-        if (hoveredCoordinate == 100) {
-            selectedCoordinates.push(100);
-            return selectedCoordinates;
-        }
+    //         // selected coordinate shouldnt be off the board && should be on the same row
+    //         if (selectedCoordinateDOM && row == selectedCoordinateDOM.getAttribute("data-row")) { 
+    //             selectedCoordinates.push(String(selectedCoordinate));
+    //         }
+    //     }
+    //     return selectedCoordinates;
+    // }
+    // // hover ship placement for vertical ship placement functionality
+    // let getShipPlacementV = (boardUnit, hoveredCoordinate) => {
+    //     let hoveredCoordinateStr = String(hoveredCoordinate);
 
-        // console.log(hoveredCoordinateStr);
-        for(let i=0; i < placeShipLength; i++) { // placeShipLength - 1 not including hoveredCoordinate
-            // let selectedCoordinate = (parseInt(hoveredCoordinateStr[0]) + i) + hoveredCoordinateStr[1]; 
-            let selectedCoordinate = String(parseInt(hoveredCoordinateStr[0])+i)+hoveredCoordinateCol;
-            // console.log(selectedCoordinate);
-            let selectedCoordinateDOM = playerBoardDOM.querySelector(`.board-div[data-coordinate='${selectedCoordinate}']`)
+    //     let selectedCoordinates = [];
 
-            // selected coordinate shouldnt be off the board && should be on the same row
-            if (selectedCoordinateDOM && col == selectedCoordinateDOM.getAttribute("data-col")) { 
-                selectedCoordinates.push(selectedCoordinate);
-            }
-        }
-        return selectedCoordinates;
-    }
+    //     if (parseInt(hoveredCoordinate) < 10) {
+    //         hoveredCoordinateStr = '0' + hoveredCoordinateStr;
+    //     }
+
+    //     let hoveredCoordinateCol = hoveredCoordinate % 10;
+
+    //     if (hoveredCoordinate == 100) {
+    //         selectedCoordinates.push(100);
+    //         return selectedCoordinates;
+    //     }
+
+    //     // console.log(hoveredCoordinateStr);
+    //     for(let i=0; i < placeShipLength; i++) { // placeShipLength - 1 not including hoveredCoordinate
+    //         // let selectedCoordinate = (parseInt(hoveredCoordinateStr[0]) + i) + hoveredCoordinateStr[1]; 
+    //         let selectedCoordinate = String(parseInt(hoveredCoordinateStr[0])+i)+hoveredCoordinateCol;
+    //         // console.log(selectedCoordinate);
+    //         let selectedCoordinateDOM = playerBoardDOM.querySelector(`.board-div[data-coordinate='${selectedCoordinate}']`)
+
+    //         // selected coordinate shouldnt be off the board && should be on the same row
+    //         if (selectedCoordinateDOM && col == selectedCoordinateDOM.getAttribute("data-col")) { 
+    //             selectedCoordinates.push(selectedCoordinate);
+    //         }
+    //     }
+    //     return selectedCoordinates;
+    // }
 
     let beginPlaceDownStage = () => {
         let playerBoardUnits = playerBoardDOM.querySelectorAll(".player-board-div");
@@ -220,8 +212,6 @@ const DOM = (() => {
         initialization,
         toggleHorizontal,
         getHorizontal,
-        getPlaceShipLength,
-        setPlaceShipLength
     }
     
 })()
