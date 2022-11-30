@@ -96,7 +96,9 @@ const DOM = (() => {
     }
 
     let clickAttack = (event) => {
-        console.log("ATTACK", event.target.getAttribute("data-coordinate"));
+        event.target.classList.add("attacked");
+
+        Game.playerAttack(event.target);
     }
 
     // toggle direction of place ship 

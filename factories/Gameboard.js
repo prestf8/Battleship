@@ -34,7 +34,7 @@ const Gameboard = () => {
     for(let coords of shipPlacement) {
       coords = parseInt(coords);
 
-      if (board[coords]) {
+      if (board[coords-1]) {
         return true;
       }
     }
@@ -43,7 +43,7 @@ const Gameboard = () => {
   }
 
   let checkIfHitAlready = (coordinate) => {
-    if (board[coordinate] == "HIT" || board[coordinate] == "MISS") {
+    if (board[coordinate-1] == "HIT" || board[coordinate-1] == "MISS") {
       return true;
     }
     return false;
@@ -60,13 +60,13 @@ const Gameboard = () => {
   };
 
   let receiveAttack = (coordinate) => {
-    if (board[coordinate]) {
-      let targetedShip = board[coordinate];
+    if (board[coordinate-1]) {
+      let targetedShip = board[coordinate-1];
 
       // sends hit function to the correct ship
       targetedShip.incrementHits();
 
-      board[coordinate] = "HIT";
+      board[coordinate-1] = "HIT";
 
       if (targetedShip.isSunk()) {
         removeShip(targetedShip);
@@ -74,7 +74,7 @@ const Gameboard = () => {
       return;
     }
 
-    board[coordinate] = "MISS";
+    board[coordinate-1] = "MISS";
   };
 
   let isAllSunk = () => remainingShips.length === 0;

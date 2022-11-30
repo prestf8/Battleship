@@ -131,7 +131,14 @@ const Game = (() => {
 
     let beginCombatStage = () => {
         DOM.beginCombatStage(); // Setup DOM initialization for the combat stage
+    }
 
+    let playerAttack = (boardUnit) => {
+        let coordinate = parseInt(boardUnit.getAttribute("data-coordinate"));
+        computer.getGameboard().receiveAttack(coordinate);
+        
+        let result = computer.getGameboard().checkIfHitAlready(coordinate);
+        console.log(result);
     }
 
 
@@ -197,6 +204,7 @@ const Game = (() => {
     }
 
     return {
+        playerAttack,
         getTurn,
         toggleTurn,
         getShipsToBePlaced,
