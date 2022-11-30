@@ -126,7 +126,43 @@ const DOM = (() => {
         return generatedCoords;
     }
 
-    // // hover ship placement for horizontal ship placement functionality
+    let beginPlaceDownStage = () => {
+        let playerBoardUnits = playerBoardDOM.querySelectorAll(".player-board-div");
+        for(let i=0; i < 100; i++) {            
+            playerBoardUnits[i].addEventListener("mouseover", hoverShipPlacement);
+            playerBoardUnits[i].addEventListener("click", clickShipPlacement);
+        }        
+    }
+
+    let beginCombatStage = () => {
+
+        let playerBoardUnits = playerBoardDOM.querySelectorAll(".player-board-div");
+        let computerBoardUnits = computerBoardDOM.querySelectorAll(".computer-board-div");
+
+        // computer board is now visible
+        document.querySelector(".computer-board").classList.remove("invis");
+
+        // rotate ship button and the place your label are now off the DOM
+        document.querySelector(".place-down-ship-elements").classList.add("invis");
+        for(let i=0; i < 100; i++) {
+            playerBoardUnits[i].removeEventListener("mouseover", hoverShipPlacement);
+            playerBoardUnits[i].removeEventListener("click", clickShipPlacement);  
+            computerBoardUnits[i].addEventListener("click", clickAttack);
+        }
+
+    }
+    
+    return {
+        setPlaceShipLabel,
+        beginCombatStage,
+        initialization,
+        toggleHorizontal,
+        getHorizontal,
+    }
+
+    // JUNK OUTDATED CODE
+
+        // // hover ship placement for horizontal ship placement functionality
     // let getShipPlacementH = (boardUnit, hoveredCoordinate) => {
     //     let selectedCoordinates = [];
     //     let row = boardUnit.getAttribute("data-row");
@@ -177,42 +213,6 @@ const DOM = (() => {
     //     }
     //     return selectedCoordinates;
     // }
-
-    let beginPlaceDownStage = () => {
-        let playerBoardUnits = playerBoardDOM.querySelectorAll(".player-board-div");
-        for(let i=0; i < 100; i++) {            
-            playerBoardUnits[i].addEventListener("mouseover", hoverShipPlacement);
-            playerBoardUnits[i].addEventListener("click", clickShipPlacement);
-        }        
-    }
-
-    let beginCombatStage = () => {
-
-        let playerBoardUnits = playerBoardDOM.querySelectorAll(".player-board-div");
-        let computerBoardUnits = computerBoardDOM.querySelectorAll(".computer-board-div");
-
-        // computer board is now visible
-        document.querySelector(".computer-board").classList.remove("invis");
-
-        // rotate ship button and the place your label are now off the DOM
-        document.querySelector(".place-down-ship-elements").classList.add("invis");
-        for(let i=0; i < 100; i++) {
-            playerBoardUnits[i].removeEventListener("mouseover", hoverShipPlacement);
-            playerBoardUnits[i].removeEventListener("click", clickShipPlacement);  
-            computerBoardUnits[i].addEventListener("click", clickAttack);
-        }
-
-        Game.computerPlaceStage();
-        Game.beginGameCombatStage();
-    }
-    
-    return {
-        setPlaceShipLabel,
-        beginCombatStage,
-        initialization,
-        toggleHorizontal,
-        getHorizontal,
-    }
     
 })()
 

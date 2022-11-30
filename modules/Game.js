@@ -6,6 +6,7 @@ const Game = (() => {
 
     let player, computer;
     let stage = "place";
+    let turn = "player";
 
     let shipsToBePlaced = [
         {
@@ -68,6 +69,16 @@ const Game = (() => {
 
     let getShipsToBePlaced = () => shipsToBePlaced;
 
+    let getTurn = () => turn;
+
+    let toggleTurn = () => {
+        if (turn === "player") {
+            turn = "computer";
+        } else if (turn === "computer") {
+            turn = "player";
+        }
+    }
+
 
     let checkIfCanPlaceDownShip = (shipPlacement) => {
         // Condition: Placement cannot be already occupied
@@ -107,8 +118,9 @@ const Game = (() => {
         
         // If no more ships to place down, begin next stage
         if (shipsToBePlaced.length == 0) {
+            Game.computerPlaceStage(); // Autogenerate COMPUTER placing ship
             stage = "combat";
-            DOM.beginCombatStage();
+            beginCombatStage();
             return;
         }
 
@@ -117,7 +129,9 @@ const Game = (() => {
 
     }
 
-    let beginGameCombatStage = () => {
+    let beginCombatStage = () => {
+        DOM.beginCombatStage(); // Setup DOM initialization for the combat stage
+
     }
 
 
@@ -183,11 +197,13 @@ const Game = (() => {
     }
 
     return {
-        beginGameCombatStage,
+        getTurn,
+        toggleTurn,
+        getShipsToBePlaced,
+        beginCombatStage,
         computerPlaceStage,
         placeDownShip,
         initialization,
-        getShipsToBePlaced,
         checkIfCanPlaceDownShip
     }
 
