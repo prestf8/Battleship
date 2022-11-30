@@ -192,15 +192,21 @@ const Game = (() => {
                 cantPlace = computer.getGameboard().checkIfCoordinatesOccupied(shipPlacement);
             }
 
-            console.log(shipPlacement);
+            // console.log(shipPlacement);
 
             for(let coords of shipPlacement) {
                 computer.getGameboard().placeShip(parseInt(coords), shipObj);
             }
 
+            
         }
-
+        
+        console.log("Player: ")
+        player.getGameboard().printBoard();
+        console.log(player.getGameboard().getBoard());
+        console.log("Computer: ");
         computer.getGameboard().printBoard();
+        console.log(computer.getGameboard().getBoard());
     }
 
     return {

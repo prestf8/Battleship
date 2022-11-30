@@ -60,7 +60,11 @@ const Gameboard = () => {
   };
 
   let receiveAttack = (coordinate) => {
-    if (board[coordinate-1]) {
+    console.log(board);
+    // "MISS", "HIT", "Ship object"
+
+    // For those that are Ship objects, coordinates cannot be repeatedly attacked
+    if (board[coordinate-1] && board[coordinate-1] != "MISS" && board[coordinate-1] != "HIT") {
       let targetedShip = board[coordinate-1];
 
       // sends hit function to the correct ship
@@ -74,7 +78,10 @@ const Gameboard = () => {
       return;
     }
 
-    board[coordinate-1] = "MISS";
+    // For those that don't have a ship and haven't been attacked yet
+    if (!board[coordinate-1]) {
+      board[coordinate-1] = "MISS";
+    }
   };
 
   let isAllSunk = () => remainingShips.length === 0;

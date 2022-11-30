@@ -63,9 +63,12 @@ const DOM = (() => {
         // Getting ship placement coordinates (based on whether placement is horizontal and based on hovered coordinate)
         let shipPlacement = playerGenerateCoordinates(hoveredBoardUnit);
 
+        console.log(shipPlacement);
+
         // Styling ship placement 
         for(const coord of shipPlacement) {
             let boardUnit = playerBoardDOM.querySelector(`[data-coordinate="${coord}"]`);
+            // console.log(boardUnit);
             boardUnit.classList.add("board-div-hovered");
         }
     }
@@ -114,6 +117,13 @@ const DOM = (() => {
         let tensDigit = baseCoordinate[0];
         let onesDigit = baseCoordinate[1];
         let correspondingTens = parseInt(tensDigit + '9') + 1; // 10, 20..., 100 can be on the same rows as 08, 19, 95, respectively...
+
+        console.log(parseInt(baseCoordinate) % 10);
+        if (parseInt(baseCoordinate) % 10 === 0) {
+            return [parseInt(baseCoordinate)];
+        }
+
+        // MODULUS % 10 == 0
 
 
         for(let i=0; i < placeShipLength; i++) {
