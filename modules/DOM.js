@@ -141,6 +141,9 @@ const DOM = (() => {
 
 
             if (generatedCoordinate <= 100 && !horizontal) { // FOR VERTICAL 
+                if (generatedCoordinate < 10) {
+                    generatedCoordinate = '0' + generatedCoordinate;
+                }
                 generatedCoords.push(generatedCoordinate);
             } else if ((generatedCoordinate <= 100) && (horizontal) && ((String(generatedCoordinate)[0] == tensDigit) || (generatedCoordinate === correspondingTens))) {
                 generatedCoords.push(generatedCoordinate);
