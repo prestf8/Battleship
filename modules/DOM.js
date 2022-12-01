@@ -117,17 +117,28 @@ const DOM = (() => {
         let tensDigit = baseCoordinate[0];
         let onesDigit = baseCoordinate[1];
         let correspondingTens = parseInt(tensDigit + '9') + 1; // 10, 20..., 100 can be on the same rows as 08, 19, 95, respectively...
-
-        console.log(parseInt(baseCoordinate) % 10);
-        if (parseInt(baseCoordinate) % 10 === 0) {
+        
+        // MODULUS % 10 == 0
+        if (parseInt(baseCoordinate) % 10 === 0 && horizontal) {
             return [parseInt(baseCoordinate)];
         }
 
-        // MODULUS % 10 == 0
-
-
         for(let i=0; i < placeShipLength; i++) {
             let generatedCoordinate = horizontal ?  (parseInt(baseCoordinate) + i) : (parseInt((parseInt(tensDigit) + i) + onesDigit));
+
+            // FOR COORD EQUAL or UNDER 10 and HORIZONTAL PLACEMENT
+            if (parseInt(baseCoordinate) <= 10 && horizontal) {
+                for(let i=0; i < placeShipLength; i++) {
+                    // placement must be on the same row
+                    if (parseInt(baseCoordinate)+i < 10) { // for generated coordinates under 10
+                        generatedCoords.push('0'+(parseInt(baseCoordinate)+i));
+                    } else if (parseInt(baseCoordinate)+i == 10) { // for generated coordinate 10
+                        generatedCoords.push(parseInt(baseCoordinate)+i);
+                    }
+                }
+                return generatedCoords;
+            }
+
 
             if (generatedCoordinate <= 100 && !horizontal) { // FOR VERTICAL 
                 generatedCoords.push(generatedCoordinate);
