@@ -2,7 +2,6 @@ import Game from "./Game.js";
 
 const DOM = (() => {
     let playerBoardDOM, computerBoardDOM;
-    let horizontal = true;
 
     let initialization = () => {
         playerBoardDOM = document.querySelector(".player-board");
@@ -10,7 +9,7 @@ const DOM = (() => {
         let rotatePlacementBtn = document.querySelector(".rotate-direction-ship");
         
         // Event "click" on button for rotating ship placement 
-        rotatePlacementBtn.addEventListener("click", toggleHorizontal);
+        rotatePlacementBtn.addEventListener("click", Game.toggleHorizontal);
         
         for (let i=0; i < 10; i++) {
             for(let j=0; j < 10; j++) {
@@ -40,9 +39,6 @@ const DOM = (() => {
         beginPlaceDownStage();
     }
 
-    let getHorizontal = () => horizontal;
-
-    // 
 
     let setPlaceShipLabel = (name) => {
         document.querySelector(".current-place-ship").textContent = name;
@@ -61,7 +57,7 @@ const DOM = (() => {
 
 
         // Getting ship placement coordinates (based on whether placement is horizontal and based on hovered coordinate)
-        let shipPlacement = playerGenerateCoordinates(hoveredBoardUnit);
+        let shipPlacement = Game.playerGenerateCoordinates(hoveredBoardUnit);
 
         console.log(shipPlacement);
 
@@ -79,7 +75,7 @@ const DOM = (() => {
         let clickedBoardUnit = event.target;
 
         // Getting ship placement coordinates (based on whether placement is horizontal and based on hovered coordinate)
-        let shipPlacement = playerGenerateCoordinates(clickedBoardUnit);
+        let shipPlacement = Game.playerGenerateCoordinates(clickedBoardUnit);
         
         // Check if place down ship is allowed 
         let canPlaceDownShip = Game.checkIfCanPlaceDownShip(shipPlacement);
@@ -102,54 +98,7 @@ const DOM = (() => {
         event.target.classList.add("attacked");
 
         Game.playerAttack(event.target);
-    }
 
-    // toggle direction of place ship 
-    let toggleHorizontal = () => {
-        horizontal = !horizontal;
-    }
-
-    // IN THE WORKS (COMBINED getShipPlacementH AND getShipPlacementV)
-    let playerGenerateCoordinates = (boardUnit) => {
-        let generatedCoords = [];
-        let placeShipLength = (Game.getShipsToBePlaced()[0]).size; // Length of current ship to place 
-        let baseCoordinate = boardUnit.getAttribute("data-coordinate");
-        let tensDigit = baseCoordinate[0];
-        let onesDigit = baseCoordinate[1];
-        let correspondingTens = parseInt(tensDigit + '9') + 1; // 10, 20..., 100 can be on the same rows as 08, 19, 95, respectively...
-        
-        // MODULUS % 10 == 0
-        if (parseInt(baseCoordinate) % 10 === 0 && horizontal) {
-            return [parseInt(baseCoordinate)];
-        }
-
-        for(let i=0; i < placeShipLength; i++) {
-            let generatedCoordinate = horizontal ?  (parseInt(baseCoordinate) + i) : (parseInt((parseInt(tensDigit) + i) + onesDigit));
-
-            // FOR COORD EQUAL or UNDER 10 and HORIZONTAL PLACEMENT
-            if (parseInt(baseCoordinate) <= 10 && horizontal) {
-                for(let i=0; i < placeShipLength; i++) {
-                    // placement must be on the same row
-                    if (parseInt(baseCoordinate)+i < 10) { // for generated coordinates under 10
-                        generatedCoords.push('0'+(parseInt(baseCoordinate)+i));
-                    } else if (parseInt(baseCoordinate)+i == 10) { // for generated coordinate 10
-                        generatedCoords.push(parseInt(baseCoordinate)+i);
-                    }
-                }
-                return generatedCoords;
-            }
-
-
-            if (generatedCoordinate <= 100 && !horizontal) { // FOR VERTICAL 
-                if (generatedCoordinate < 10) {
-                    generatedCoordinate = '0' + generatedCoordinate;
-                }
-                generatedCoords.push(generatedCoordinate);
-            } else if ((generatedCoordinate <= 100) && (horizontal) && ((String(generatedCoordinate)[0] == tensDigit) || (generatedCoordinate === correspondingTens))) {
-                generatedCoords.push(generatedCoordinate);
-            }
-        }
-        return generatedCoords;
     }
 
     let beginPlaceDownStage = () => {
@@ -164,6 +113,9 @@ const DOM = (() => {
 
         let playerBoardUnits = playerBoardDOM.querySelectorAll(".player-board-div");
         let computerBoardUnits = computerBoardDOM.querySelectorAll(".computer-board-div");
+
+        // current turn label is now visible
+        document.querySelector(".turn-label").classList.remove("invis");
 
         // computer board is now visible
         document.querySelector(".computer-board").classList.remove("invis");
@@ -182,8 +134,6 @@ const DOM = (() => {
         setPlaceShipLabel,
         beginCombatStage,
         initialization,
-        toggleHorizontal,
-        getHorizontal,
     }
 
     // JUNK OUTDATED CODE

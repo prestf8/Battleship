@@ -76,6 +76,13 @@ body {
     background-color: red;
 }
 
+.turn-label {
+    text-align: center;
+    font-family: 'Ubuntu', sans-serif;
+    font-size: 1.5rem;
+    margin: 1rem;
+}
+
 @media screen and (min-width: 750px) {
     .boards-container {
         flex-direction: row;

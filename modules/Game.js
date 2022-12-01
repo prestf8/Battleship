@@ -7,6 +7,7 @@ const Game = (() => {
     let player, computer;
     let stage = "place";
     let turn = "player";
+    let horizontal = true;
 
     let shipsToBePlaced = [
         {
@@ -67,6 +68,15 @@ const Game = (() => {
         computer.initialization();
     }
 
+    let getHorizontal = () => horizontal;
+
+
+    // toggle direction of place ship 
+    let toggleHorizontal = () => {
+            horizontal = !horizontal;
+    }
+
+    
     let getShipsToBePlaced = () => shipsToBePlaced;
 
     let getTurn = () => turn;
@@ -131,6 +141,50 @@ const Game = (() => {
 
     let beginCombatStage = () => {
         DOM.beginCombatStage(); // Setup DOM initialization for the combat stage
+    }
+
+    
+    // IN THE WORKS (COMBINED getShipPlacementH AND getShipPlacementV)
+    let playerGenerateCoordinates = (boardUnit) => {
+        let generatedCoords = [];
+        let placeShipLength = (getShipsToBePlaced()[0]).size; // Length of current ship to place 
+        let baseCoordinate = boardUnit.getAttribute("data-coordinate");
+        let tensDigit = baseCoordinate[0];
+        let onesDigit = baseCoordinate[1];
+        let correspondingTens = parseInt(tensDigit + '9') + 1; // 10, 20..., 100 can be on the same rows as 08, 19, 95, respectively...
+        
+        // MODULUS % 10 == 0
+        if (parseInt(baseCoordinate) % 10 === 0 && horizontal) {
+            return [parseInt(baseCoordinate)];
+        }
+
+        for(let i=0; i < placeShipLength; i++) {
+            let generatedCoordinate = horizontal ?  (parseInt(baseCoordinate) + i) : (parseInt((parseInt(tensDigit) + i) + onesDigit));
+
+            // FOR COORD EQUAL or UNDER 10 and HORIZONTAL PLACEMENT
+            if (parseInt(baseCoordinate) <= 10 && horizontal) {
+                for(let i=0; i < placeShipLength; i++) {
+                    // placement must be on the same row
+                    if (parseInt(baseCoordinate)+i < 10) { // for generated coordinates under 10
+                        generatedCoords.push('0'+(parseInt(baseCoordinate)+i));
+                    } else if (parseInt(baseCoordinate)+i == 10) { // for generated coordinate 10
+                        generatedCoords.push(parseInt(baseCoordinate)+i);
+                    }
+                }
+                return generatedCoords;
+            }
+
+
+            if (generatedCoordinate <= 100 && !horizontal) { // FOR VERTICAL 
+                if (generatedCoordinate < 10) {
+                    generatedCoordinate = '0' + generatedCoordinate;
+                }
+                generatedCoords.push(generatedCoordinate);
+            } else if ((generatedCoordinate <= 100) && (horizontal) && ((String(generatedCoordinate)[0] == tensDigit) || (generatedCoordinate === correspondingTens))) {
+                generatedCoords.push(generatedCoordinate);
+            }
+        }
+        return generatedCoords;
     }
 
     let playerAttack = (boardUnit) => {
@@ -210,6 +264,7 @@ const Game = (() => {
     }
 
     return {
+        playerGenerateCoordinates,
         playerAttack,
         getTurn,
         toggleTurn,
