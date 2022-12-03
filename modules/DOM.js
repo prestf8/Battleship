@@ -59,8 +59,6 @@ const DOM = (() => {
         // Getting ship placement coordinates (based on whether placement is horizontal and based on hovered coordinate)
         let shipPlacement = Game.playerGenerateCoordinates(hoveredBoardUnit);
 
-        console.log(shipPlacement);
-
         // Styling ship placement 
         for(const coord of shipPlacement) {
             let boardUnit = playerBoardDOM.querySelector(`[data-coordinate="${coord}"]`);
@@ -95,9 +93,9 @@ const DOM = (() => {
     }
 
     let clickAttack = (event) => {
-        event.target.classList.add("attacked");
-
         Game.playerAttack(event.target);
+
+        
 
     }
 
@@ -129,8 +127,26 @@ const DOM = (() => {
         }
 
     }
+
+    // DOM for board units that are attacked and have a ship
+    let attackShip = (coordinate) => {
+        coordinate = coordinate < 10 ? ('0' + coordinate) : coordinate;
+        // ATTACK HITS SHIP DOM
+        document.querySelector(`.computer-board > [data-coordinate="${coordinate}"]`).textContent = "SHIP HIT";
+        document.querySelector(`.computer-board > [data-coordinate="${coordinate}"]`).classList.add("hit");
+
+    }
+
+    // DOM for board units that are attacked and have nothing
+    let attackNothing = (coordinate) => {
+        coordinate = coordinate < 10 ? ('0' + coordinate) : coordinate;
+        // ATTACK HITS SHIP DOM
+        document.querySelector(`.computer-board > [data-coordinate="${coordinate}"]`).classList.add("missed");
+    }
     
     return {
+        attackShip,
+        attackNothing,
         setPlaceShipLabel,
         beginCombatStage,
         initialization,

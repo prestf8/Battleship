@@ -73,7 +73,7 @@ const Game = (() => {
 
     // toggle direction of place ship 
     let toggleHorizontal = () => {
-            horizontal = !horizontal;
+        horizontal = !horizontal;
     }
 
     
@@ -189,10 +189,17 @@ const Game = (() => {
 
     let playerAttack = (boardUnit) => {
         let coordinate = parseInt(boardUnit.getAttribute("data-coordinate"));
-        computer.getGameboard().receiveAttack(coordinate);
-        
         let result = computer.getGameboard().checkIfHitAlready(coordinate);
-        console.log(result);
+        
+        // IF TILE HAS NOT BEEN ATTACKED ALREADY
+        if (!result) {
+            computer.getGameboard().receiveAttack(coordinate);
+        }
+
+
+
+        
+
     }
 
 

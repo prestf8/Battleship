@@ -1,3 +1,5 @@
+import DOM from "../modules/DOM.js";
+import Game from "../modules/Game.js";
 import Ship from "./ShipFactory.js";
 
 const Gameboard = () => {
@@ -44,7 +46,8 @@ const Gameboard = () => {
 
   let checkIfHitAlready = (coordinate) => {
     if (board[coordinate-1] == "HIT" || board[coordinate-1] == "MISS") {
-      return true;
+      console.log(board[coordinate-1]);
+      return true; // YES IT HAS ALREADY BEEN HIT 
     }
     return false;
   }
@@ -60,7 +63,7 @@ const Gameboard = () => {
   };
 
   let receiveAttack = (coordinate) => {
-    console.log(board);
+    // console.log(board);
     // "MISS", "HIT", "Ship object"
 
     // For those that are Ship objects, coordinates cannot be repeatedly attacked
@@ -70,7 +73,10 @@ const Gameboard = () => {
       // sends hit function to the correct ship
       targetedShip.incrementHits();
 
+      DOM.attackShip(coordinate);
+
       board[coordinate-1] = "HIT";
+
 
       if (targetedShip.isSunk()) {
         removeShip(targetedShip);
@@ -80,6 +86,7 @@ const Gameboard = () => {
 
     // For those that don't have a ship and haven't been attacked yet
     if (!board[coordinate-1]) {
+      DOM.attackNothing(coordinate);
       board[coordinate-1] = "MISS";
     }
   };

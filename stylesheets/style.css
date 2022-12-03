@@ -72,7 +72,11 @@ body {
     background-color: cyan;
 }
 
-.board-div.attacked {
+.board-div.hit {
+    background-color: blue;
+}
+
+.board-div.missed {
     background-color: red;
 }
 
