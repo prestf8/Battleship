@@ -190,16 +190,41 @@ const Game = (() => {
     let playerAttack = (boardUnit) => {
         let coordinate = parseInt(boardUnit.getAttribute("data-coordinate"));
         let result = computer.getGameboard().checkIfHitAlready(coordinate);
+
+        console.log(result);
         
         // IF TILE HAS NOT BEEN ATTACKED ALREADY
         if (!result) {
             computer.getGameboard().receiveAttack(coordinate);
+
+            turn="computer"; // CHANGE THIS LATER
         }
 
+        if(turn === "computer") {
+            computerAttack();
+        }
+    }
 
+    let delay = (milliseconds) => {
+        return new Promise(resolve => {
+            setTimeout(resolve, milliseconds);
+        });
+    }
+    
 
-        
+    let computerAttack = () => {
+        let randomCoordinate = Math.floor(Math.random()*100)+1;
+        let result = player.getGameboard().checkIfHitAlready(randomCoordinate);
 
+        // regenerate coordinate if coordinate already hit
+        while(result) {
+            randomCoordinate = Math.floor(Math.random()*100) + 1;
+            result = player.getGameboard().checkIfHitAlready(randomCoordinate);
+        }
+
+        player.getGameboard().receiveAttack(randomCoordinate);
+        console.log(randomCoordinate);
+        turn = "player";    
     }
 
 
@@ -271,6 +296,7 @@ const Game = (() => {
     }
 
     return {
+        delay,
         playerGenerateCoordinates,
         playerAttack,
         getTurn,

@@ -94,9 +94,6 @@ const DOM = (() => {
 
     let clickAttack = (event) => {
         Game.playerAttack(event.target);
-
-        
-
     }
 
     let beginPlaceDownStage = () => {
@@ -132,8 +129,14 @@ const DOM = (() => {
     let attackShip = (coordinate) => {
         coordinate = coordinate < 10 ? ('0' + coordinate) : coordinate;
         // ATTACK HITS SHIP DOM
-        document.querySelector(`.computer-board > [data-coordinate="${coordinate}"]`).textContent = "SHIP HIT";
-        document.querySelector(`.computer-board > [data-coordinate="${coordinate}"]`).classList.add("hit");
+
+        if (Game.getTurn() === "player") {
+            document.querySelector(`.computer-board > [data-coordinate="${coordinate}"]`).textContent = "SHIP HIT";
+            document.querySelector(`.computer-board > [data-coordinate="${coordinate}"]`).classList.add("hit");
+        } else if (Game.getTurn() === "computer") {
+            document.querySelector(`.player-board > [data-coordinate="${coordinate}"]`).textContent = "SHIP HIT";
+            document.querySelector(`.player-board > [data-coordinate="${coordinate}"]`).classList.add("hit");            
+        }
 
     }
 
@@ -141,7 +144,11 @@ const DOM = (() => {
     let attackNothing = (coordinate) => {
         coordinate = coordinate < 10 ? ('0' + coordinate) : coordinate;
         // ATTACK HITS SHIP DOM
-        document.querySelector(`.computer-board > [data-coordinate="${coordinate}"]`).classList.add("missed");
+        if (Game.getTurn() === "player") {
+            document.querySelector(`.computer-board > [data-coordinate="${coordinate}"]`).classList.add("missed");
+        } else if (Game.getTurn() === "computer") {
+            document.querySelector(`.player-board > [data-coordinate="${coordinate}"]`).classList.add("missed");
+        }
     }
     
     return {

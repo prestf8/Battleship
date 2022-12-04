@@ -62,22 +62,23 @@ const Gameboard = () => {
     remainingShips.splice(index, 1);
   };
 
-  let receiveAttack = (coordinate) => {
-    // console.log(board);
-    // "MISS", "HIT", "Ship object"
-
-    // For those that are Ship objects, coordinates cannot be repeatedly attacked
+  async function receiveAttack(coordinate) {
+    // Runs IF SHIP OBJECT and NOT hit already 
     if (board[coordinate-1] && board[coordinate-1] != "MISS" && board[coordinate-1] != "HIT") {
       let targetedShip = board[coordinate-1];
 
       // sends hit function to the correct ship
       targetedShip.incrementHits();
 
+      // delay computer attack by 1 second
+      // await Game.delay(1000)
+
       DOM.attackShip(coordinate);
 
       board[coordinate-1] = "HIT";
 
 
+      // Remove ship from array   
       if (targetedShip.isSunk()) {
         removeShip(targetedShip);
       }
