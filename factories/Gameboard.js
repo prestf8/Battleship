@@ -46,7 +46,6 @@ const Gameboard = () => {
 
   let checkIfHitAlready = (coordinate) => {
     if (board[coordinate-1] == "HIT" || board[coordinate-1] == "MISS") {
-      console.log(board[coordinate-1]);
       return true; // YES IT HAS ALREADY BEEN HIT 
     }
     return false;
@@ -62,7 +61,7 @@ const Gameboard = () => {
     remainingShips.splice(index, 1);
   };
 
-  async function receiveAttack(coordinate) {
+  function receiveAttack(coordinate) {
     // Runs IF SHIP OBJECT and NOT hit already 
     if (board[coordinate-1] && board[coordinate-1] != "MISS" && board[coordinate-1] != "HIT") {
       let targetedShip = board[coordinate-1];
@@ -70,8 +69,6 @@ const Gameboard = () => {
       // sends hit function to the correct ship
       targetedShip.incrementHits();
 
-      // delay computer attack by 1 second
-      // await Game.delay(1000)
 
       DOM.attackShip(coordinate);
 
@@ -84,6 +81,7 @@ const Gameboard = () => {
       }
       return;
     }
+
 
     // For those that don't have a ship and haven't been attacked yet
     if (!board[coordinate-1]) {
@@ -123,10 +121,7 @@ const Gameboard = () => {
       row += '\n';  
       result += row;
     }
-    console.log(result);
-    // for(let coords of board) {
-      // console.log(coords);
-    // }
+    // console.log(result);
   }
 
   return {

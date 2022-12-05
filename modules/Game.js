@@ -8,6 +8,7 @@ const Game = (() => {
     let stage = "place";
     let turn = "player";
     let horizontal = true;
+    let processingComputerAttack = false;
 
     let shipsToBePlaced = [
         {
@@ -68,8 +69,7 @@ const Game = (() => {
         computer.initialization();
     }
 
-    let getHorizontal = () => horizontal;
-
+    let getProcessingComputerAttack = () => processingComputerAttack;
 
     // toggle direction of place ship 
     let toggleHorizontal = () => {
@@ -147,6 +147,7 @@ const Game = (() => {
     // IN THE WORKS (COMBINED getShipPlacementH AND getShipPlacementV)
     let playerGenerateCoordinates = (boardUnit) => {
         let generatedCoords = [];
+        console.log(getShipsToBePlaced([0]))
         let placeShipLength = (getShipsToBePlaced()[0]).size; // Length of current ship to place 
         let baseCoordinate = boardUnit.getAttribute("data-coordinate");
         let tensDigit = baseCoordinate[0];
@@ -191,8 +192,6 @@ const Game = (() => {
         let coordinate = parseInt(boardUnit.getAttribute("data-coordinate"));
         let result = computer.getGameboard().checkIfHitAlready(coordinate);
 
-        console.log(result);
-        
         // IF TILE HAS NOT BEEN ATTACKED ALREADY
         if (!result) {
             computer.getGameboard().receiveAttack(coordinate);
@@ -205,14 +204,16 @@ const Game = (() => {
         }
     }
 
-    let delay = (milliseconds) => {
-        return new Promise(resolve => {
-            setTimeout(resolve, milliseconds);
-        });
-    }
+    // let sleep = (milliseconds) => {
+    //     return new Promise(resolve => {
+    //         setTimeout(resolve, milliseconds);
+    //     });
+    // }
     
 
     let computerAttack = () => {
+        processingComputerAttack = true;
+        console.log("1: ", processingComputerAttack);
         let randomCoordinate = Math.floor(Math.random()*100)+1;
         let result = player.getGameboard().checkIfHitAlready(randomCoordinate);
 
@@ -223,7 +224,8 @@ const Game = (() => {
         }
 
         player.getGameboard().receiveAttack(randomCoordinate);
-        console.log(randomCoordinate);
+        processingComputerAttack = false;
+        console.log("2: ", processingComputerAttack);
         turn = "player";    
     }
 
@@ -287,16 +289,16 @@ const Game = (() => {
             
         }
         
-        console.log("Player: ")
-        player.getGameboard().printBoard();
-        console.log(player.getGameboard().getBoard());
-        console.log("Computer: ");
-        computer.getGameboard().printBoard();
-        console.log(computer.getGameboard().getBoard());
+        // console.log("Player: ")
+        // player.getGameboard().printBoard();
+        // console.log(player.getGameboard().getBoard());
+        // console.log("Computer: ");
+        // computer.getGameboard().printBoard();
+        // console.log(computer.getGameboard().getBoard());
     }
 
     return {
-        delay,
+        getProcessingComputerAttack,
         playerGenerateCoordinates,
         playerAttack,
         getTurn,

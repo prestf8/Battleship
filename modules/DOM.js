@@ -93,7 +93,10 @@ const DOM = (() => {
     }
 
     let clickAttack = (event) => {
-        Game.playerAttack(event.target);
+        // if not in middle of a computer's turn, then player can attack
+        if (!Game.getProcessingComputerAttack()) {
+            Game.playerAttack(event.target);
+        }
     }
 
     let beginPlaceDownStage = () => {
@@ -105,18 +108,17 @@ const DOM = (() => {
     }
 
     let beginCombatStage = () => {
+        console.log("begin combat stage ran:");
 
         let playerBoardUnits = playerBoardDOM.querySelectorAll(".player-board-div");
         let computerBoardUnits = computerBoardDOM.querySelectorAll(".computer-board-div");
-
-        // current turn label is now visible
-        document.querySelector(".turn-label").classList.remove("invis");
 
         // computer board is now visible
         document.querySelector(".computer-board").classList.remove("invis");
 
         // rotate ship button and the place your label are now off the DOM
         document.querySelector(".place-down-ship-elements").classList.add("invis");
+
         for(let i=0; i < 100; i++) {
             playerBoardUnits[i].removeEventListener("mouseover", hoverShipPlacement);
             playerBoardUnits[i].removeEventListener("click", clickShipPlacement);  
@@ -126,28 +128,37 @@ const DOM = (() => {
     }
 
     // DOM for board units that are attacked and have a ship
-    let attackShip = (coordinate) => {
+    function attackShip(coordinate) {
         coordinate = coordinate < 10 ? ('0' + coordinate) : coordinate;
         // ATTACK HITS SHIP DOM
-
+        console.log(Game.getTurn())
         if (Game.getTurn() === "player") {
             document.querySelector(`.computer-board > [data-coordinate="${coordinate}"]`).textContent = "SHIP HIT";
             document.querySelector(`.computer-board > [data-coordinate="${coordinate}"]`).classList.add("hit");
         } else if (Game.getTurn() === "computer") {
-            document.querySelector(`.player-board > [data-coordinate="${coordinate}"]`).textContent = "SHIP HIT";
-            document.querySelector(`.player-board > [data-coordinate="${coordinate}"]`).classList.add("hit");            
+
+            // Game.sleep(2000).then(() => {
+                document.querySelector(`.player-board > [data-coordinate="${coordinate}"]`).textContent = "SHIP HIT";
+                document.querySelector(`.player-board > [data-coordinate="${coordinate}"]`).classList.add("hit");            
+            // })
         }
 
     }
 
     // DOM for board units that are attacked and have nothing
-    let attackNothing = (coordinate) => {
+    function attackNothing (coordinate) {
         coordinate = coordinate < 10 ? ('0' + coordinate) : coordinate;
+
+        console.log(Game.getTurn())
+
         // ATTACK HITS SHIP DOM
         if (Game.getTurn() === "player") {
             document.querySelector(`.computer-board > [data-coordinate="${coordinate}"]`).classList.add("missed");
         } else if (Game.getTurn() === "computer") {
-            document.querySelector(`.player-board > [data-coordinate="${coordinate}"]`).classList.add("missed");
+
+            // Game.sleep(2000).then(() => {
+                document.querySelector(`.player-board > [data-coordinate="${coordinate}"]`).classList.add("missed");
+            // })
         }
     }
     
