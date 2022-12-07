@@ -108,8 +108,6 @@ const DOM = (() => {
     }
 
     let beginCombatStage = () => {
-        console.log("begin combat stage ran:");
-
         let playerBoardUnits = playerBoardDOM.querySelectorAll(".player-board-div");
         let computerBoardUnits = computerBoardDOM.querySelectorAll(".computer-board-div");
 
@@ -131,7 +129,6 @@ const DOM = (() => {
     function attackShip(coordinate) {
         coordinate = coordinate < 10 ? ('0' + coordinate) : coordinate;
         // ATTACK HITS SHIP DOM
-        console.log(Game.getTurn())
         if (Game.getTurn() === "player") {
             document.querySelector(`.computer-board > [data-coordinate="${coordinate}"]`).textContent = "SHIP HIT";
             document.querySelector(`.computer-board > [data-coordinate="${coordinate}"]`).classList.add("hit");
@@ -149,7 +146,6 @@ const DOM = (() => {
     function attackNothing (coordinate) {
         coordinate = coordinate < 10 ? ('0' + coordinate) : coordinate;
 
-        console.log(Game.getTurn())
 
         // ATTACK HITS SHIP DOM
         if (Game.getTurn() === "player") {
