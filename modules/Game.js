@@ -95,8 +95,19 @@ const Game = (() => {
 
     // RETURN TRUE = Invalid ship placement; ShipPlacement is near other ships
     // RETURN FALSE = Valid ship placement; ShipPlacement is not near other ships 
-    let checkIfShipPlacementNearOther = (shipPlacement) => {
+    let checkShipPlacementNear = (shipPlacement) => {
 
+        let nearOther;
+
+        if (horizontal) {
+            nearOther = checkHorShipPlacementNear(shipPlacement);
+        } else if (!horizontal) {
+            nearOther = checkVerShipPlacementNear(shipPlacement);
+        }
+        return nearOther;
+    }
+
+    let checkHorShipPlacementNear = (shipPlacement) => {
         let numShipPlacement = shipPlacement.map((coordinate) => parseInt(coordinate));
         let strShipPlacement = shipPlacement.map((coordinate) => {
             if (parseInt(coordinate) < 10) {
@@ -106,72 +117,117 @@ const Game = (() => {
             }
         });
 
-        if (horizontal) {
-            for(let coordIndex = 0; coordIndex < shipPlacement.length; coordIndex++) {
-                let row = parseInt(strShipPlacement[coordIndex][0]);
-                let rowUp = String(row - 1);
-                let rowDown = String(row + 1);
-                let col = parseInt(strShipPlacement[coordIndex][1]);
-                let colRight = col + 1;
-                let colLeft = col - 1;
+        for(let coordIndex = 0; coordIndex < shipPlacement.length; coordIndex++) {
+            let row = parseInt(strShipPlacement[coordIndex][0]);
+            let rowUp = String(row - 1);
+            let rowDown = String(row + 1);
+            let col = parseInt(strShipPlacement[coordIndex][1]);
+            let colRight = col + 1;
+            let colLeft = col - 1;
 
-                let playerGameboard = player.getGameboard().getBoard();
+            let playerGameboard = player.getGameboard().getBoard();
 
-                let nearbyCoordinatesH = {
-                    "left": numShipPlacement[coordIndex] - 2, //  -1 because index starts at 0, -1 to get left coordinate
-                    "right": numShipPlacement[coordIndex], // -1 because index starts at 0, +1 to get right coordinate
-                    "up": parseInt(rowUp + col) - 1, // -1 because index starts at 0
-                    "down": parseInt(rowDown+col) - 1, // -1 because index starts at 0
-                    "diagonal-left-up": parseInt(rowUp + colLeft) - 1, // -1 because index starts at 0
-                    "diagonal-left-down": parseInt(rowDown + colLeft) - 1, // -1 because index starts at 0
-                    "diagonal-right-up": parseInt(rowUp + colRight) - 1, // -1 because index starts at 0
-                    "diagonal-right-down": parseInt(rowDown + colRight) - 1, // -1 because index starts at 0
-                }
+            let nearbyCoordinates = {
+                "left": numShipPlacement[coordIndex] - 2, //  -1 because index starts at 0, -1 to get left coordinate
+                "right": numShipPlacement[coordIndex], // -1 because index starts at 0, +1 to get right coordinate
+                "up": parseInt(rowUp + col) - 1, // -1 because index starts at 0
+                "down": parseInt(rowDown+col) - 1, // -1 because index starts at 0
+                "diagonal-left-up": parseInt(rowUp + colLeft) - 1, // -1 because index starts at 0
+                "diagonal-left-down": parseInt(rowDown + colLeft) - 1, // -1 because index starts at 0
+                "diagonal-right-up": parseInt(rowUp + colRight) - 1, // -1 because index starts at 0
+                "diagonal-right-down": parseInt(rowDown + colRight) - 1, // -1 because index starts at 0
+            }
 
-                // console.log(row, col);
+            // console.log(row, col);
 
-                if ((coordIndex === 0) && 
-                ((playerGameboard[nearbyCoordinatesH.left]) || 
-                (playerGameboard[nearbyCoordinatesH.up]) ||  
-                (playerGameboard[nearbyCoordinatesH.down]) ||  
-                (playerGameboard[nearbyCoordinatesH["diagonal-left-down"]]) || 
-                (playerGameboard[nearbyCoordinatesH["diagonal-left-up"]]))) {
-                    return true; 
-                }
-                
-                if (((coordIndex > 0) && (coordIndex < shipPlacement.length-1)) && 
-                ((playerGameboard[nearbyCoordinatesH.up]) || (playerGameboard[nearbyCoordinatesH.down]))) {
-                    console.log("any other coord");
-
-                    return true;
-                } 
-                
-                if ((coordIndex === shipPlacement.length-1) && 
-                ((playerGameboard[nearbyCoordinatesH.right]) || 
-                (playerGameboard[nearbyCoordinatesH.up]) || 
-                (playerGameboard[nearbyCoordinatesH.down]) ||
-                (playerGameboard[nearbyCoordinatesH["diagonal-right-down"]]) || 
-                (playerGameboard[nearbyCoordinatesH["diagonal-right-up"]]))) {
-                    console.log("last coord");
-
-                    return true;
-                }
-
-
+            if ((coordIndex === 0) && 
+            ((playerGameboard[nearbyCoordinates.left]) || 
+            (playerGameboard[nearbyCoordinates.up]) ||  
+            (playerGameboard[nearbyCoordinates.down]) ||  
+            (playerGameboard[nearbyCoordinates["diagonal-left-down"]]) || 
+            (playerGameboard[nearbyCoordinates["diagonal-left-up"]]))) {
+                return true; 
+            }
+            
+            if (((coordIndex > 0) && (coordIndex < shipPlacement.length-1)) && 
+            ((playerGameboard[nearbyCoordinates.up]) || (playerGameboard[nearbyCoordinates.down]))) {
+                return true;
+            } 
+            
+            if ((coordIndex === shipPlacement.length-1) && 
+            ((playerGameboard[nearbyCoordinates.right]) || 
+            (playerGameboard[nearbyCoordinates.up]) || 
+            (playerGameboard[nearbyCoordinates.down]) ||
+            (playerGameboard[nearbyCoordinates["diagonal-right-down"]]) || 
+            (playerGameboard[nearbyCoordinates["diagonal-right-up"]]))) {
+                return true;
             }
         }
         return false;
+    }
+    
+    let checkVerShipPlacementNear = (shipPlacement) => {
 
+        let numShipPlacement = shipPlacement.map((coordinate) => parseInt(coordinate));
+        let strShipPlacement = shipPlacement.map((coordinate) => {
+            if (parseInt(coordinate) < 10) {
+                return '0' + parseInt(coordinate);
+            } else {
+                return String(coordinate);
+            }
+        });
+        for(let coordIndex = 0; coordIndex < shipPlacement.length; coordIndex++) {
+            let row = parseInt(strShipPlacement[coordIndex][0]);
+            let rowUp = String(row - 1);
+            let rowDown = String(row + 1);
+            let col = parseInt(strShipPlacement[coordIndex][1]);
+            let colRight = col + 1;
+            let colLeft = col - 1;
 
+            let playerGameboard = player.getGameboard().getBoard();
 
+            let nearbyCoordinates = {
+                "left": numShipPlacement[coordIndex] - 2, //  -1 because index starts at 0, -1 to get left coordinate
+                "right": numShipPlacement[coordIndex], // -1 because index starts at 0, +1 to get right coordinate
+                "up": parseInt(rowUp + col) - 1, // -1 because index starts at 0
+                "down": parseInt(rowDown+col) - 1, // -1 because index starts at 0
+                "diagonal-left-up": parseInt(rowUp + colLeft) - 1, // -1 because index starts at 0
+                "diagonal-left-down": parseInt(rowDown + colLeft) - 1, // -1 because index starts at 0
+                "diagonal-right-up": parseInt(rowUp + colRight) - 1, // -1 because index starts at 0
+                "diagonal-right-down": parseInt(rowDown + colRight) - 1, // -1 because index starts at 0
+            }
+
+            
+            if ((coordIndex === 0) && 
+            ((playerGameboard[nearbyCoordinates.left]) || 
+            (playerGameboard[nearbyCoordinates.right]) ||  
+            (playerGameboard[nearbyCoordinates.up]) ||  
+            (playerGameboard[nearbyCoordinates["diagonal-left-up"]]) || 
+            (playerGameboard[nearbyCoordinates["diagonal-right-up"]]))) {
+                return true; 
+            }
+            
+            if (((coordIndex > 0) && (coordIndex < shipPlacement.length-1)) && 
+            ((playerGameboard[nearbyCoordinates.left]) || (playerGameboard[nearbyCoordinates.right]))) {
+                return true;
+            } 
+            
+            if ((coordIndex === shipPlacement.length-1) && 
+            ((playerGameboard[nearbyCoordinates.right]) || 
+            (playerGameboard[nearbyCoordinates.left]) || 
+            (playerGameboard[nearbyCoordinates.down]) ||
+            (playerGameboard[nearbyCoordinates["diagonal-left-down"]]) || 
+            (playerGameboard[nearbyCoordinates["diagonal-right-down"]]))) {
+                return true;
+            }
+        }
     }
 
 
     // ADD EXTENSION
     let checkIfCanPlaceDownShip = (shipPlacement) => {
         // EXTENSION: Can't place ships near other ships
-        if (checkIfShipPlacementNearOther(shipPlacement)) {
-            console.log(checkIfShipPlacementNearOther(shipPlacement));
+        if (checkShipPlacementNear(shipPlacement)) {
             return;
         }
 
