@@ -3,6 +3,7 @@ import Gameboard from "./Gameboard.js";
 const Player = () => {
   let turn = false;
   let gameboard;
+  let name; 
 
   let initialization = () => {
     gameboard = Gameboard();
@@ -11,6 +12,12 @@ const Player = () => {
 
   let toggleTurn = () => {
     turn = !turn;
+  }
+
+  let getName = () => name;
+
+  let setName = (nameOfPlayer) => {
+    name = nameOfPlayer;
   }
 
   let getGameboard = () => gameboard;
@@ -29,6 +36,8 @@ const Player = () => {
   }
 
   return {
+    getName,
+    setName,
     playerAttack,
     initialization,
     toggleTurn,

@@ -76,7 +76,7 @@ const DOM = (() => {
         let shipPlacement = Game.playerGenerateCoordinates(clickedBoardUnit);
         
         // Check if place down ship is allowed 
-        let canPlaceDownShip = Game.checkIfCanPlaceDownShip(shipPlacement);
+        let canPlaceDownShip = Game.checkIfCanPlaceDownShip(shipPlacement, Game.getPlayer());
 
         // Only run this block if place down ship is allowed
         if (canPlaceDownShip) {
