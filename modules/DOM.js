@@ -1,11 +1,11 @@
 import Game from "./Game.js";
 
 const DOM = (() => {
-    let playerBoardDOM, computerBoardDOM;
+    let playerBoardDOM = document.querySelector(".player-board");
+    let computerBoardDOM = document.querySelector(".computer-board");
 
     let initialization = () => {
-        playerBoardDOM = document.querySelector(".player-board");
-        computerBoardDOM= document.querySelector(".computer-board");
+        // Rotate direction ship
         let rotatePlacementBtn = document.querySelector(".rotate-direction-ship");
         
         // Event "click" on button for rotating ship placement 
@@ -19,16 +19,16 @@ const DOM = (() => {
                 computerBoardUnit.setAttribute("class", "board-div computer-board-div");
     
                 // coordinate for the board unit
-                let dataCoordinateValue = String((i*10)+(j+1));
+                let boardCoordinate = String((i*10)+(j+1));
 
                 // Prefix '0' for those under 10
-                if (dataCoordinateValue < 10) {
-                    dataCoordinateValue = '0' + dataCoordinateValue;
+                if (boardCoordinate < 10) {
+                    boardCoordinate = '0' + boardCoordinate;
                 }
 
                 // set coordinates
-                playerBoardUnit.setAttribute("data-coordinate", dataCoordinateValue);
-                computerBoardUnit.setAttribute("data-coordinate", dataCoordinateValue);
+                playerBoardUnit.setAttribute("data-coordinate", boardCoordinate);
+                computerBoardUnit.setAttribute("data-coordinate", boardCoordinate);
 
                 playerBoardDOM.appendChild(playerBoardUnit);
                 computerBoardDOM.appendChild(computerBoardUnit);
@@ -36,17 +36,21 @@ const DOM = (() => {
         }
         
 
-        beginPlaceDownStage();
+        Game.beginPlaceDownStage();
     }
 
-
-    let setPlaceShipLabel = (name) => {
-        document.querySelector(".current-place-ship").textContent = name;
+    let beginPlaceDownStage = () => {
+        let playerBoardUnits = playerBoardDOM.querySelectorAll(".player-board-div");
+        for(let i=0; i < 100; i++) {            
+            playerBoardUnits[i].addEventListener("mouseover", hoverShipPlacement);
+            playerBoardUnits[i].addEventListener("click", clickShipPlacement);
+        }        
     }
 
     let hoverShipPlacement = (event) => {
         
-        let playerBoardUnits = document.querySelectorAll(".player-board-div");
+        let playerBoardUnits = playerBoardDOM.querySelectorAll(".player-board-div");
+
         // Hovered Unit
         let hoveredBoardUnit = event.target;
 
@@ -60,11 +64,11 @@ const DOM = (() => {
         let shipPlacement = Game.playerGenerateCoordinates(hoveredBoardUnit);
 
         // Styling ship placement 
-        for(const coord of shipPlacement) {
-            let boardUnit = playerBoardDOM.querySelector(`[data-coordinate="${coord}"]`);
-            // console.log(boardUnit);
+        for(const coordinate of shipPlacement) {
+            let boardUnit = playerBoardDOM.querySelector(`[data-coordinate="${coordinate}"]`);
             boardUnit.classList.add("board-div-hovered");
         }
+        
     }
 
     let clickShipPlacement = (event) => {
@@ -92,6 +96,10 @@ const DOM = (() => {
 
     }
 
+    let setPlaceShipLabel = (name) => {
+        document.querySelector(".current-place-ship").textContent = name;
+    }
+
     let clickAttack = (event) => {
         // if not in middle of a computer's turn, then player can attack
         if (!Game.getProcessingComputerAttack()) {
@@ -99,20 +107,13 @@ const DOM = (() => {
         }
     }
 
-    let beginPlaceDownStage = () => {
-        let playerBoardUnits = playerBoardDOM.querySelectorAll(".player-board-div");
-        for(let i=0; i < 100; i++) {            
-            playerBoardUnits[i].addEventListener("mouseover", hoverShipPlacement);
-            playerBoardUnits[i].addEventListener("click", clickShipPlacement);
-        }        
-    }
-
     let beginCombatStage = () => {
+        // PLAYER BOARD UNITS & COMPUTER BOARD UNITS
         let playerBoardUnits = playerBoardDOM.querySelectorAll(".player-board-div");
         let computerBoardUnits = computerBoardDOM.querySelectorAll(".computer-board-div");
 
         // computer board is now visible
-        document.querySelector(".computer-board").classList.remove("invis");
+        computerBoardDOM.classList.remove("invis");
 
         // rotate ship button and the place your label are now off the DOM
         document.querySelector(".place-down-ship-elements").classList.add("invis");
@@ -130,14 +131,11 @@ const DOM = (() => {
         coordinate = coordinate < 10 ? ('0' + coordinate) : coordinate;
         // ATTACK HITS SHIP DOM
         if (Game.getTurn() === "player") {
-            document.querySelector(`.computer-board > [data-coordinate="${coordinate}"]`).textContent = "SHIP HIT";
-            document.querySelector(`.computer-board > [data-coordinate="${coordinate}"]`).classList.add("hit");
+            computerBoardDOM.querySelector(`[data-coordinate="${coordinate}"]`).textContent = "SHIP HIT";
+            computerBoardDOM.querySelector(`[data-coordinate="${coordinate}"]`).classList.add("hit");
         } else if (Game.getTurn() === "computer") {
-
-            // Game.sleep(2000).then(() => {
-                document.querySelector(`.player-board > [data-coordinate="${coordinate}"]`).textContent = "SHIP HIT";
-                document.querySelector(`.player-board > [data-coordinate="${coordinate}"]`).classList.add("hit");            
-            // })
+            playerBoardDOM.querySelector(`[data-coordinate="${coordinate}"]`).textContent = "SHIP HIT";
+            playerBoardDOM.querySelector(`[data-coordinate="${coordinate}"]`).classList.add("hit");
         }
 
     }
@@ -146,19 +144,16 @@ const DOM = (() => {
     function attackNothing (coordinate) {
         coordinate = coordinate < 10 ? ('0' + coordinate) : coordinate;
 
-
         // ATTACK HITS SHIP DOM
         if (Game.getTurn() === "player") {
             document.querySelector(`.computer-board > [data-coordinate="${coordinate}"]`).classList.add("missed");
         } else if (Game.getTurn() === "computer") {
-
-            // Game.sleep(2000).then(() => {
-                document.querySelector(`.player-board > [data-coordinate="${coordinate}"]`).classList.add("missed");
-            // })
+            document.querySelector(`.player-board > [data-coordinate="${coordinate}"]`).classList.add("missed");
         }
     }
     
     return {
+        beginPlaceDownStage,
         attackShip,
         attackNothing,
         setPlaceShipLabel,

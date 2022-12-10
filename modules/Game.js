@@ -4,17 +4,6 @@ import DOM from "./DOM.js";
 
 const Game = (() => {
 
-    let player, computer;
-    let stage = "place";
-    let turn = "player";
-    let horizontal = true;
-
-    let getTurn = () => turn;
-
-    let getShipsToBePlaced = () => shipsToBePlaced;
-
-    let getPlayer = () => player;
-
     let shipsToBePlaced = [
         {
             name: "Carrier",
@@ -61,6 +50,11 @@ const Game = (() => {
         }
     ];
 
+    let player, computer;
+    let stage = "place";
+    let turn = "player";
+    let horizontal = true;
+
     let initialization = () => {
         // Initialize DOM
         DOM.initialization();
@@ -76,11 +70,21 @@ const Game = (() => {
         computer.setName("computer");
     }
 
+    let beginPlaceDownStage = () => {
+        DOM.beginPlaceDownStage();
+    }
 
     // toggle direction of place ship 
     let toggleHorizontal = () => {
         horizontal = !horizontal;
     }
+
+
+    let getTurn = () => turn;
+
+    let getShipsToBePlaced = () => shipsToBePlaced;
+
+    let getPlayer = () => player;
 
     let toggleTurn = () => {
         if (turn === "player") {
@@ -94,7 +98,6 @@ const Game = (() => {
     // RETURN TRUE = Invalid ship placement; ShipPlacement is near other ships
     // RETURN FALSE = Valid ship placement; ShipPlacement is not near other ships 
     let checkShipPlacementNear = (shipPlacement, user, horizontal) => {
-        // console.log(shipPlacement, user, horizontal);
         let nearOther;
 
         if (horizontal) {
@@ -295,46 +298,68 @@ const Game = (() => {
 
     
     // Generate PLAYER ship placement
+    // INPUT: DOM board unit
+    // OUTPUT: Array of ship coordinates
+    // CLEANED
     let playerGenerateCoordinates = (boardUnit) => {
         let generatedCoords = [];
-        let placeShipLength = (getShipsToBePlaced()[0]).size; // Length of current ship to place 
-        let baseCoordinate = boardUnit.getAttribute("data-coordinate");
-        let tensDigit = baseCoordinate[0];
-        let onesDigit = baseCoordinate[1];
-        let correspondingTens = parseInt(tensDigit + '9') + 1; // 10, 20..., 100 can be on the same rows as 08, 19, 95, respectively...
-        
-        // MODULUS % 10 == 0
-        if (parseInt(baseCoordinate) % 10 === 0 && horizontal) {
-            return [parseInt(baseCoordinate)];
+        let shipSize = (shipsToBePlaced[0]).size; // Length of current ship to place 
+
+        let coordData = {
+            baseCoordinate: parseInt(boardUnit.getAttribute("data-coordinate")), // base coordinate is now in numerical form
+            onesDigit: parseInt(boardUnit.getAttribute("data-coordinate")[1]),
+            tensDigit: parseInt(boardUnit.getAttribute("data-coordinate")[0]),
+            correspondingTens: parseInt(parseInt(boardUnit.getAttribute("data-coordinate")[0]) + '9') + 1,
         }
 
-        for(let i=0; i < placeShipLength; i++) {
-            let generatedCoordinate = horizontal ?  (parseInt(baseCoordinate) + i) : (parseInt((parseInt(tensDigit) + i) + onesDigit));
+        // console.log(coordData.baseCoordinate, coordData.onesDigit, coordData.tensDigit, coordData.correspondingTens)
+        
+        // FOR hovered/clicked coordinates that are 10, 20, 30, 40, 50...
+        if (coordData.baseCoordinate % 10 === 0 && horizontal) {
+            // console.log("Divisible by 10: ", [String(coordData.baseCoordinate)]);
+            return [String(coordData.baseCoordinate)];
+        }
 
-            // FOR COORD EQUAL or UNDER 10 and HORIZONTAL PLACEMENT
-            if (parseInt(baseCoordinate) <= 10 && horizontal) {
-                for(let i=0; i < placeShipLength; i++) {
-                    // placement must be on the same row
-                    if (parseInt(baseCoordinate)+i < 10) { // for generated coordinates under 10
-                        generatedCoords.push('0'+(parseInt(baseCoordinate)+i));
-                    } else if (parseInt(baseCoordinate)+i == 10) { // for generated coordinate 10
-                        generatedCoords.push(parseInt(baseCoordinate)+i);
-                    }
-                }
-                return generatedCoords;
-            }
+        // FOR coordinate 100 REGARDless of direction of ship Placement;
+        if (coordData.baseCoordinate === 100) {
+            return [String(coordData.baseCoordinate)];
+        }
 
+        // FOR hovered/click coordinates that are less than 10, and HORIZONTAL placement
+        if (coordData.baseCoordinate < 10 && horizontal) {
+            for(let j=0; j < shipSize; j++) {
+                let generatedCoordinate = coordData.baseCoordinate + j;
 
-            if (generatedCoordinate <= 100 && !horizontal) { // FOR VERTICAL 
                 if (generatedCoordinate < 10) {
                     generatedCoordinate = '0' + generatedCoordinate;
                 }
-                generatedCoords.push(generatedCoordinate);
-            } else if ((generatedCoordinate <= 100) && (horizontal) && ((String(generatedCoordinate)[0] == tensDigit) || (generatedCoordinate === correspondingTens))) {
-                generatedCoords.push(generatedCoordinate);
+
+                // number has to be within the grid (less than or equal to 10) to be considered a valid generated coordinate
+                if (parseInt(generatedCoordinate) <= 10) {
+                    generatedCoords.push(String(generatedCoordinate));
+                }
+            }
+
+            console.log("Less than 10 & horizontal: ", generatedCoords);
+
+            return generatedCoords;
+        }
+
+        for(let i=0; i < shipSize; i++) {
+            let generatedCoordinate = horizontal ?  (parseInt(coordData.baseCoordinate) + i) : (String(coordData.tensDigit + i) + coordData.onesDigit);
+
+
+            if (!horizontal && generatedCoordinate <= 100) { // FOR VERTICAL 
+                generatedCoords.push(String(generatedCoordinate));
+
+            } else if ((horizontal) && (generatedCoordinate <= 100) && ((String(generatedCoordinate)[0] == coordData.tensDigit) || (generatedCoordinate === coordData.correspondingTens))) {
+                generatedCoords.push(String(generatedCoordinate));
             }
         }
 
+        console.log(generatedCoords);
+
+        console.log("=a-fdf-df-d-f---asdf-asd-fasdfa-dsf-")
         return generatedCoords;
     }
 
@@ -430,6 +455,7 @@ const Game = (() => {
     }
 
     return {
+        beginPlaceDownStage,
         getPlayer,
         playerGenerateCoordinates,
         playerAttack,
