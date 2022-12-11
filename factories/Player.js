@@ -7,7 +7,7 @@ const Player = () => {
 
   let initialization = () => {
     gameboard = Gameboard();
-    gameboard.initializeArray();
+    gameboard.initialization();
   };
 
   let toggleTurn = () => {

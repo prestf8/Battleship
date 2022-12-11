@@ -39,6 +39,7 @@ const DOM = (() => {
         Game.beginPlaceDownStage();
     }
 
+    // CLEANED
     let beginPlaceDownStage = () => {
         let playerBoardUnits = playerBoardDOM.querySelectorAll(".player-board-div");
         for(let i=0; i < 100; i++) {            
@@ -47,11 +48,10 @@ const DOM = (() => {
         }        
     }
 
+    // CLEANED
     let hoverShipPlacement = (event) => {
         
         let playerBoardUnits = playerBoardDOM.querySelectorAll(".player-board-div");
-
-        // Hovered Unit
         let hoveredBoardUnit = event.target;
 
         // Reset DOM Hover Styling for every unit
@@ -78,9 +78,9 @@ const DOM = (() => {
 
         // Getting ship placement coordinates (based on whether placement is horizontal and based on hovered coordinate)
         let shipPlacement = Game.playerGenerateCoordinates(clickedBoardUnit);
-        
+
         // Check if place down ship is allowed 
-        let canPlaceDownShip = Game.checkIfCanPlaceDownShip(shipPlacement, Game.getPlayer());
+        let canPlaceDownShip = Game.checkIfCanPlaceDownShip(shipPlacement, Game.getPlayer(), Game.getHorizontal());
 
         // Only run this block if place down ship is allowed
         if (canPlaceDownShip) {

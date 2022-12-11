@@ -18,14 +18,14 @@ const Gameboard = () => {
 
   let getRemainingShips = () => remainingShips;
 
-  let initializeArray = () => {
+  let initialization = () => {
     for (let i = 0; i < 100; i++) {
       board[i] = null;
     } 
   };
 
   let checkIfOccupied = (coordinate) => {
-    if (board[coordinate]) {
+    if (board[coordinate-1]) {
       return true;
     }
     return false;
@@ -125,14 +125,14 @@ const Gameboard = () => {
   }
 
   return {
+    getBoard,
+    getRemainingShips,
+    initialization,
     printBoard,
     checkIfOccupied,
     checkIfCoordinatesOccupied,
-    getBoard,
-    initializeArray,
     placeShip,
     receiveAttack,
-    getRemainingShips,
     isAllSunk,
     checkIfHitAlready,
   };
