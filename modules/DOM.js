@@ -84,14 +84,15 @@ const DOM = (() => {
 
         // Only run this block if place down ship is allowed
         if (canPlaceDownShip) {
-            // Add styling for coordinates where ships were placed down
+            
+            // DOM Styling for placing down ship 
             for(let coords of shipPlacement) {
                 let boardUnitDOM = playerBoardDOM.querySelector(`.player-board-div[data-coordinate='${coords}']`);
                 boardUnitDOM.classList.add("board-div-selected");
             }
 
             // Place Down Ship
-            Game.placeDownShip(shipPlacement);
+            Game.playerPlaceShip(shipPlacement);
         }
 
     }
@@ -100,11 +101,9 @@ const DOM = (() => {
         document.querySelector(".current-place-ship").textContent = name;
     }
 
-    let clickAttack = (event) => {
+    let attackForComputer = (event) => {
         // if not in middle of a computer's turn, then player can attack
-        if (!Game.getProcessingComputerAttack()) {
-            Game.playerAttack(event.target);
-        }
+        Game.attackForComputer(event.target);
     }
 
     let beginCombatStage = () => {
@@ -112,16 +111,17 @@ const DOM = (() => {
         let playerBoardUnits = playerBoardDOM.querySelectorAll(".player-board-div");
         let computerBoardUnits = computerBoardDOM.querySelectorAll(".computer-board-div");
 
-        // computer board is now visible
-        computerBoardDOM.classList.remove("invis");
 
         // rotate ship button and the place your label are now off the DOM
+        computerBoardDOM.classList.remove("invis");
+        document.querySelector(".rotate-direction-ship-container").classList.add("invis");
         document.querySelector(".place-down-ship-elements").classList.add("invis");
 
+        // Remove event listeners and add attack event listener for computer board
         for(let i=0; i < 100; i++) {
             playerBoardUnits[i].removeEventListener("mouseover", hoverShipPlacement);
             playerBoardUnits[i].removeEventListener("click", clickShipPlacement);  
-            computerBoardUnits[i].addEventListener("click", clickAttack);
+            computerBoardUnits[i].addEventListener("click", attackForComputer);
         }
 
     }

@@ -34,9 +34,7 @@ const Gameboard = () => {
   // plural version of the function above
   let checkIfCoordinatesOccupied = (shipPlacement) => {
     for(let coords of shipPlacement) {
-      coords = parseInt(coords);
-
-      if (board[coords-1]) {
+      if (board[parseInt(coords)-1]) {
         return true;
       }
     }
@@ -44,6 +42,7 @@ const Gameboard = () => {
     return false; 
   }
 
+  // CLEANED
   let checkIfHitAlready = (coordinate) => {
     if (board[coordinate-1] == "HIT" || board[coordinate-1] == "MISS") {
       return true; // YES IT HAS ALREADY BEEN HIT 
@@ -51,9 +50,10 @@ const Gameboard = () => {
     return false;
   }
 
-  let placeShip = (coordinate, ship) => {
-    board[coordinate-1] = ship;
-    ship.setLocation(coordinate);
+  let placeShip = (shipPlacement, ship) => {
+    for(let coords of shipPlacement) {
+      board[parseInt(coords)-1] = ship;
+    }
   };
 
   let removeShip = (ship) => {
