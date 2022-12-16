@@ -255,15 +255,20 @@ const Game = (() => {
         // Place down ship onto corresponding gameboard
         playerGameboard.placeShip(shipPlacement, ship);
 
+
         
         // If no more ships to place down, begin next stage
         if (shipsToBePlaced.length == 0) {
-            Game.computerPlaceStage(); // Autogenerate COMPUTER placing ship
             stage = "combat";
             beginCombatStage();
+            Game.computerPlaceStage(); // Autogenerate COMPUTER placing ship
         }
-        // Alter place ship label 
-        DOM.setPlaceShipLabel(shipsToBePlaced[0].name);
+
+        // filter for now
+        if (stage == "place") {
+            // Alter place ship label 
+            DOM.setPlaceShipLabel(shipsToBePlaced[0].name);
+        }
 
     }
 
@@ -370,34 +375,43 @@ const Game = (() => {
     let computerGenerateCoordinates = (shipSize) => {
         let shipPlacement = [];
         while(true) {
-            let randomNumber100 = Math.floor(Math.random()*100) + 1;  // base coordinate is now in numerical form
-            let randomNumber2 = Math.floor(Math.random() * 2);
+            let randomNumber100 = String(Math.floor(Math.random()*100) + 1);  // base coordinate is now in numerical form
+            // let randomNumber2 = Math.floor(Math.random() * 2);
+            if (parseInt(randomNumber100) < 10) {
+                randomNumber100 = '0' + randomNumber100;
+            }
 
             let coordData = {
-                horizontal: randomNumber2 == 1 ? true : false,
-                baseCoordinate: parseInt((randomNumber100 < 10) ? ('0' + randomNumber100) : String(randomNumber100)),
-                onesDigit: parseInt(((randomNumber100 < 10) ? ('0' + randomNumber100) : String(randomNumber100))[1]),
-                tensDigit: parseInt(((randomNumber100 < 10) ? ('0' + randomNumber100) : String(randomNumber100))[0]),
-                correspondingTens: parseInt(((randomNumber100 < 10) ? ('0' + randomNumber100) : String(randomNumber100)[0] + '9') + 1),
+                baseCoordinate: randomNumber100,
+                tensDigit: randomNumber100[0],
+                correspondingTens: String(parseInt(randomNumber100[0] + '9') + 1),
+            }
+
+
+            if (coordData.baseCoordinate == '100') {
+                continue;
             }
             
             for(let i=0; i < shipSize; i++) {
-                let coordinate = coordData.horizontal ? parseInt(coordData.baseCoordinate) + i : parseInt((parseInt(coordData.tensDigit) + i) + coordData.onesDigit);
+                let coordinate = String(parseInt(coordData.baseCoordinate) + i);
         
                 // 01-10
                 // 11-20
                 // ...
                 // 91-100
 
-                if (!coordData.horizontal && coordinate <= 100) { // FOR VERTICAL 
-                    shipPlacement.push(coordinate < 10 ? '0' + coordinate : String(coordinate));
-                } else if (coordData.horizontal && (coordinate <= 100) && ((String(coordinate)[0] == coordData.tensDigit) || (coordinate === coordData.correspondingTens))) {
+                // if (!coordData.horizontal && coordinate <= 100) { // FOR VERTICAL 
+                //     shipPlacement.push(coordinate < 10 ? '0' + coordinate : String(coordinate));
+
+                console.log(coordData.correspondingTens);
+                
+                if ((parseInt(coordinate) <= 100) && ((coordinate)[0] == coordData.tensDigit && (coordinate)[1] != '0') || (coordinate == coordData.correspondingTens)) {
                     shipPlacement.push(coordinate < 10 ? '0' + coordinate : String(coordinate));
                 }
             }
 
 
-            if (checkIfCanPlaceDownShip(shipPlacement, computer, horizontal)) {
+            if (checkIfCanPlaceDownShip(shipPlacement, computer, true)) {
                 break; // breaks out of while loop IF can place down ship
             } else {
                 shipPlacement = [];
@@ -411,7 +425,7 @@ const Game = (() => {
     // PLACE DOWN STAGE FOR COMPUTER
     let computerPlaceStage = () => {
 
-        while(computerShipsToBePlaced) {
+        while(computerShipsToBePlaced.length > 0) {
             let ship = Ship(computerShipsToBePlaced[0].name, computerShipsToBePlaced[0].size);
             let shipPlacement = computerGenerateCoordinates(computerShipsToBePlaced[0].size);
 
@@ -423,9 +437,8 @@ const Game = (() => {
         
         // console.log("Player: ");
         // console.log(player.getGameboard().getBoard());
-        // console.log("Computer: ");
-        // computer.getGameboard().printBoard();
-        // console.log(computer.getGameboard().getBoard());
+        console.log("Computer: ");
+        computer.getGameboard().printBoard();
     }
 
     return {

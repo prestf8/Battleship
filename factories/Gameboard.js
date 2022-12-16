@@ -121,7 +121,7 @@ const Gameboard = () => {
       row += '\n';  
       result += row;
     }
-    // console.log(result);
+    console.log(result);
   }
 
   return {
