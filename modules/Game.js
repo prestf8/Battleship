@@ -1,6 +1,7 @@
 import Player from "/factories/Player.js";
 import Ship from "/factories/ShipFactory.js";
 import DOM from "./DOM.js";
+import Gameboard from "../factories/Gameboard.js";
 
 const Game = (() => {
 
@@ -54,6 +55,7 @@ const Game = (() => {
     let stage = "place";
     let turn = "player";
     let horizontal = true;
+    let processingComputerAttack;
 
     let getTurn = () => turn;
 
@@ -69,13 +71,13 @@ const Game = (() => {
 
         // Initialize Player
         player = Player();
-        player.initialization();
         player.setName("player");
+        player.initialization();
 
         // Initialize Opponent
         computer = Player();
-        computer.initialization();
         computer.setName("computer");
+        computer.initialization();
     }
 
     let beginPlaceDownStage = () => {
@@ -255,7 +257,6 @@ const Game = (() => {
         // Place down ship onto corresponding gameboard
         playerGameboard.placeShip(shipPlacement, ship);
 
-
         
         // If no more ships to place down, begin next stage
         if (shipsToBePlaced.length == 0) {
@@ -287,6 +288,7 @@ const Game = (() => {
         // IF TILE HAS NOT BEEN ATTACKED ALREADY
         if (!result) {
             gameboard.receiveAttack(coordinate);
+
             turn="computer"; 
         }
 
@@ -371,7 +373,6 @@ const Game = (() => {
     }
 
     // COMPUTER STUFF
-
     let computerGenerateCoordinates = (shipSize) => {
         let shipPlacement = [];
         while(true) {
@@ -441,6 +442,174 @@ const Game = (() => {
         computer.getGameboard().printBoard();
     }
 
+    let hitAround = (shipPlacement, nameOfPlayer) => {
+        let horizontal = parseInt(shipPlacement[1]) == parseInt(shipPlacement[0]) + 1 ? true : false;
+        
+        let surroundingCoordinates = getSurroundingCoordinates(shipPlacement, horizontal);
+
+        // surrounding shipplacement
+        console.log("Sunk surrounding coordinates: " + nameOfPlayer + " " + surroundingCoordinates);
+    } 
+
+    // 58, 59, 60 => 48 49 50
+
+    // 1, 2, 3, 4, 5, 6, 7, 8, 9, 0
+
+    let getSurroundingCoordinates = (shipPlacement, horizontal) => {
+        let originalPlacement = shipPlacement;
+        shipPlacement = [];
+        
+        if (horizontal) {
+            
+            // UP
+            if (originalPlacement[0][0] != '0') {
+                let uppArr = originalPlacement.map((element) => {
+                    return String(parseInt(element[0]) - 1) + String(element[1]);
+                })
+
+                shipPlacement.push(...uppArr);
+
+                if (uppArr[0][1] != '1') {
+                    let element = String(uppArr[0][0]) + String(parseInt(uppArr[0][1])-1); 
+                    shipPlacement.push(element)
+                }
+                // 59
+                if (uppArr[uppArr.length-1][1] != '0') {
+                    // c
+
+                    let tens = String(uppArr[uppArr.length-1][0]);
+                    let ones = String(parseInt(uppArr[uppArr.length-1][1]) + 1);
+
+                    if (parseInt(ones) % 10 == 0) {
+                        ones = "0";
+                        tens = String(parseInt(tens) + 1);
+                    }
+                    shipPlacement.push(tens + ones);
+                }
+            }
+            
+
+            if (originalPlacement[0][0] != '9') {
+                let downArr = originalPlacement.map((element) => {
+                    return String(parseInt(element[0]) + 1) + String(element[1]);
+                })
+
+                shipPlacement.push(...downArr);
+
+                if (downArr[0][1] != '1') {
+                    let element = String(downArr[0][0]) + String(parseInt(downArr[0][1])-1); 
+                    shipPlacement.push(element)
+                }
+                // 59
+                if (downArr[downArr.length-1][1] != '0') {
+                    let tens = String(downArr[0][0]);
+                    let ones = String(parseInt(downArr[downArr.length-1][1])+1)
+
+                    if (parseInt(ones) % 10 == 0) {
+                        ones = "0";
+                        tens = String(parseInt(tens) + 1);
+                    }
+                    shipPlacement.push(tens + ones);
+                }
+            }
+
+            if (originalPlacement[0][1] != '1') {
+                let element = String(originalPlacement[0][0]) + String(parseInt(originalPlacement[0][1]) - 1);
+                shipPlacement.push(element);
+            }
+
+            if (originalPlacement[originalPlacement.length-1][1] != '0') {
+                let tens = String(originalPlacement[originalPlacement.length-1][0]);
+                let ones = String(parseInt(originalPlacement[originalPlacement.length-1][1]) + 1);
+
+                if (parseInt(ones) % 10 == 0) {
+                    ones = "0";
+                    tens = String(parseInt(tens) + 1);
+                }
+                shipPlacement.push(tens + ones);
+            }
+
+        } else if (!horizontal) {
+
+            if (originalPlacement[0][0] != '0') {   
+                let upElement = String(parseInt(originalPlacement[0][0]) - 1) + String(originalPlacement[0][1])
+
+                shipPlacement.push(upElement);
+
+                if (upElement[1] != '1') {
+                    let element = String(upElement[0]) + String(parseInt(upElement[1])-1);
+                    shipPlacement.push(element);
+                }
+                if (upElement[1] != '0') {
+                    let tens = String(upElement[0]);
+                    let ones = String(parseInt(upElement[1])+1);
+    
+                    if (parseInt(ones) % 10 == 0) {
+                        ones = "0";
+                        tens = String(parseInt(tens) + 1);
+                    }
+                    shipPlacement.push(tens + ones);
+                }
+
+            }
+
+            if (originalPlacement[originalPlacement.length-1][0] != '9') {
+                let downElement = String(parseInt(originalPlacement[0][0]) + 1) + String(originalPlacement[0][1]);
+                shipPlacement.push(downElement);
+
+                if (downElement[1] != '1') {
+                    let element = String(downElement[0]) + String(parseInt(downElement[1])-1);
+                    shipPlacement.push(element);
+                }
+                if (downElement[1] != '0') {
+                    let tens = String(downElement[0])
+                    let ones = String(parseInt(downElement[1])+1);
+    
+                    if (parseInt(ones) % 10 == 0) {
+                        ones = "0";
+                        tens = String(parseInt(tens) + 1);
+                    }
+                    shipPlacement.push(tens + ones);
+                }
+
+            }
+
+            if (originalPlacement[0][1] != '1') {
+                let leftElement = String(originalPlacement[0][0]) + String(parseInt(originalPlacement[0][1]) - 1);
+                
+                for(let i=0; i < originalPlacement.length; i++) {
+                    shipPlacement.push(String(parseInt(leftElement[0]) + i) + String(leftElement[1]));
+                }
+
+            }
+
+            if (originalPlacement[0][1] != '0') {
+                let rightElementTens = String(originalPlacement[0][0]);
+                let rightElementOnes = String(parseInt(originalPlacement[0][1]) + 1);
+
+                if (parseInt(rightElementOnes) % 10 == 0) {
+                    rightElementOnes = "0";
+                    rightElementTens = String(parseInt(rightElementTens) + 1);
+                }
+
+                for(let i=0; i < originalPlacement.length; i++) {
+                    shipPlacement.push(String(parseInt(rightElementTens) + i) + String(rightElementOnes));
+                }
+
+            }
+            
+        }
+
+        let sortedShipPlacement = shipPlacement.map(coordinate => parseInt(coordinate)).sort().map((coordinate) => {
+            if (coordinate < 10) {
+                return "0" + coordinate;
+            } 
+            return String(coordinate);
+        })
+
+        return sortedShipPlacement;
+    }
+
     return {
         getHorizontal,
         getPlayer,
@@ -455,7 +624,8 @@ const Game = (() => {
         beginCombatStage,
         computerPlaceStage,
         playerPlaceShip,
-        checkIfCanPlaceDownShip
+        checkIfCanPlaceDownShip,
+        hitAround,
     }
 
 })();

@@ -3,6 +3,7 @@ import Game from "../modules/Game.js";
 import Ship from "./ShipFactory.js";
 
 const Gameboard = () => {
+  let name;
   let board = [];
   let remainingShips = [
     "Carrier",
@@ -12,16 +13,19 @@ const Gameboard = () => {
     "Patrol Boat",
   ];
 
+  let getName = () => name;
+
   let getBoard = () => {
     return board;
   };
 
   let getRemainingShips = () => remainingShips;
 
-  let initialization = () => {
+  let initialization = (playerName) => {
     for (let i = 0; i < 100; i++) {
       board[i] = null;
     } 
+    name = playerName;
   };
 
   let checkIfOccupied = (coordinate) => {
@@ -30,6 +34,7 @@ const Gameboard = () => {
     }
     return false;
   }
+
 
   // plural version of the function above
   let checkIfCoordinatesOccupied = (shipPlacement) => {
@@ -53,6 +58,7 @@ const Gameboard = () => {
   let placeShip = (shipPlacement, ship) => {
     for(let coords of shipPlacement) {
       board[parseInt(coords)-1] = ship;
+      ship.setCoordinates(shipPlacement);
     }
   };
 
@@ -78,6 +84,7 @@ const Gameboard = () => {
       // Remove ship from array   
       if (targetedShip.isSunk()) {
         removeShip(targetedShip);
+        Game.hitAround(targetedShip.getCoordinates(), name);
       }
       return;
     }
@@ -125,6 +132,7 @@ const Gameboard = () => {
   }
 
   return {
+    getName,
     getBoard,
     getRemainingShips,
     initialization,

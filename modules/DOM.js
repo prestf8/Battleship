@@ -152,6 +152,10 @@ const DOM = (() => {
         }
     }
     
+    let hitAround = (shipPlacement) => {
+
+    }
+
     return {
         beginPlaceDownStage,
         attackShip,
@@ -159,6 +163,7 @@ const DOM = (() => {
         setPlaceShipLabel,
         beginCombatStage,
         initialization,
+        hitAround,
     }
 
     // JUNK OUTDATED CODE

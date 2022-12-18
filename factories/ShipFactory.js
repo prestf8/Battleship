@@ -12,6 +12,10 @@ const Ship = (type, length) => {
 
     let getCoordinates = () => coordinates;
 
+    let setCoordinates = (shipPlacement) => {
+        coordinates = shipPlacement;
+    }
+
     let getHits = () => hits;
 
     let isSunk = () => length === hits;
@@ -23,6 +27,7 @@ const Ship = (type, length) => {
         getHits,
         getType,
         getLength,
+        setCoordinates,
         getCoordinates,
     }
 
