@@ -152,8 +152,62 @@ const DOM = (() => {
         }
     }
     
-    let hitAround = (shipPlacement) => {
+    // surroundingcoordinates
+    let hitAround = (shipPlacement, nameOfPlayer) => {
+        let selectedDOM;
+        if (nameOfPlayer == "computer") {
+            selectedDOM = computerBoardDOM;
+        } else if (nameOfPlayer == "player") {
+            selectedDOM = playerBoardDOM;
+        }
 
+        for(let coordinate of shipPlacement) {
+            selectedDOM.querySelector(`[data-coordinate="${coordinate}"]`).classList.add("missed");
+        }
+
+    }
+
+    let endGame = (winner) => {
+        let computerBoardUnits = computerBoardDOM.querySelectorAll(".computer-board-div");
+        let result = document.querySelector(".result");
+        let restartButton = document.querySelector(".restart");
+
+        for(let i=0; i < 100; i++) {
+            computerBoardUnits[i].removeEventListener("click", attackForComputer);
+        }
+
+        if (winner == "player") {
+            result.textContent = "L - W (Computer)";
+        } else {
+            result.textContent = "W (Player) - L";
+        }
+
+        restartButton.addEventListener("click", Game.restartGame);
+        restartButton.classList.remove("invis");
+
+    }
+
+    let restartGame = () => {
+        for(let i=1; i <= 100; i++) {
+            coordinate = String(i);
+
+            if (coordinate < 10) {
+                coordinate = '0' + coordinate;
+            }
+            // boardUnit.classList.remove("board-div-hovered");
+            // boardUnitDOM.classList.add("board-div-selected");
+            // computerBoardDOM.classList.remove("invis");
+            // document.querySelector(".rotate-direction-ship-container").classList.add("invis");
+            // document.querySelector(".place-down-ship-elements").classList.add("invis");
+
+            // playerBoardDOM.querySelector(`[data-coordinate="${coordinate}"]`)        
+            // computerBoardDOM.querySelector(`[data-coordinate="${coordinate}"]`)     
+            // document.querySelector(`.computer-board > [data-coordinate="${coordinate}"]`).classList.add("missed");
+            // document.querySelector(`.player-board > [data-coordinate="${coordinate}"]`).classList.add("missed");
+            // computerBoardDOM.querySelector(`[data-coordinate="${coordinate}"]`).textContent = "SHIP HIT";
+            // playerBoardDOM.querySelector(`[data-coordinate="${coordinate}"]`).textContent = "SHIP HIT";
+
+        }
     }
 
     return {
@@ -164,6 +218,7 @@ const DOM = (() => {
         beginCombatStage,
         initialization,
         hitAround,
+        endGame
     }
 
     // JUNK OUTDATED CODE

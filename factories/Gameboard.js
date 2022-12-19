@@ -80,11 +80,16 @@ const Gameboard = () => {
 
       board[coordinate-1] = "HIT";
 
+      console.log(remainingShips);
 
       // Remove ship from array   
       if (targetedShip.isSunk()) {
         removeShip(targetedShip);
         Game.hitAround(targetedShip.getCoordinates(), name);
+
+        if (Game.checkGameEnd(remainingShips)) {
+          Game.endGame(name);
+        }
       }
       return;
     }
@@ -131,6 +136,20 @@ const Gameboard = () => {
     console.log(result);
   }
 
+  // surroundingcoordinates
+  let hitAround = (shipPlacement) => {
+    for(let coordinate of shipPlacement) {
+      board[parseInt(coordinate)-1] = "MISS";
+    }
+  }
+
+
+  let clear = () => {
+    for (let m=0; m < 100; m++) {
+      board[m] = null;
+    }
+  }
+
   return {
     getName,
     getBoard,
@@ -143,6 +162,8 @@ const Gameboard = () => {
     receiveAttack,
     isAllSunk,
     checkIfHitAlready,
+    hitAround,
+    clear
   };
 };
 

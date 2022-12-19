@@ -295,6 +295,8 @@ const Game = (() => {
         if(turn === "computer") {
             computerAttack();
         }
+
+    
     }
     
 
@@ -449,6 +451,14 @@ const Game = (() => {
 
         // surrounding shipplacement
         console.log("Sunk surrounding coordinates: " + nameOfPlayer + " " + surroundingCoordinates);
+
+        if (nameOfPlayer == "computer") {
+            computer.getGameboard().hitAround(surroundingCoordinates);
+        } else if (nameOfPlayer == "player") {
+            player.getGameboard().hitAround(surroundingCoordinates);
+        }
+
+        DOM.hitAround(surroundingCoordinates, nameOfPlayer);
     } 
 
     // 58, 59, 60 => 48 49 50
@@ -554,7 +564,7 @@ const Game = (() => {
             }
 
             if (originalPlacement[originalPlacement.length-1][0] != '9') {
-                let downElement = String(parseInt(originalPlacement[0][0]) + 1) + String(originalPlacement[0][1]);
+                let downElement = String(parseInt(originalPlacement[originalPlacement.length-1][0]) + 1) + String(originalPlacement[originalPlacement.length-1][1]);
                 shipPlacement.push(downElement);
 
                 if (downElement[1] != '1') {
@@ -610,6 +620,20 @@ const Game = (() => {
         return sortedShipPlacement;
     }
 
+    let checkGameEnd = (remainingShips) => {
+        return remainingShips.length == 0;
+    }
+
+    let endGame = (winner) => {
+        DOM.endGame(winner);
+    }
+
+    let restartGame = () => {
+        DOM.restartGame();
+        computer.getGameboard().clear();
+        player.getGameboard().clear();
+    }
+
     return {
         getHorizontal,
         getPlayer,
@@ -626,6 +650,9 @@ const Game = (() => {
         playerPlaceShip,
         checkIfCanPlaceDownShip,
         hitAround,
+        checkGameEnd,
+        endGame,
+        restartGame,
     }
 
 })();
