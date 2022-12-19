@@ -57,6 +57,58 @@ const Game = (() => {
     let horizontal = true;
     let processingComputerAttack;
 
+    let resetGameState = () => {
+        shipsToBePlaced = [
+            {
+                name: "Carrier",
+                size: 5,
+            },
+            {
+                name: "Battleship",
+                size: 4,
+            },
+            {
+                name: "Destroyer",
+                size: 3,
+            },
+            {
+                name: "Submarine",
+                size: 3,
+            },
+            {
+                name: "Patrol Boat",
+                size: 2,
+            }
+        ];
+        computerShipsToBePlaced = [
+            {
+                name: "Carrier",
+                size: 5,
+            },
+            {
+                name: "Battleship",
+                size: 4,
+            },
+            {
+                name: "Destroyer",
+                size: 3,
+            },
+            {
+                name: "Submarine",
+                size: 3,
+            },
+            {
+                name: "Patrol Boat",
+                size: 2,
+            }
+        ];
+        stage = "place";
+        turn = "player";
+        horizontal = true;
+        player = null;
+        computer = null;
+    }
+
     let getTurn = () => turn;
 
     let getShipsToBePlaced = () => shipsToBePlaced;
@@ -653,6 +705,7 @@ const Game = (() => {
         checkGameEnd,
         endGame,
         restartGame,
+        resetGameState,
     }
 
 })();

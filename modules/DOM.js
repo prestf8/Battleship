@@ -171,6 +171,10 @@ const DOM = (() => {
         let computerBoardUnits = computerBoardDOM.querySelectorAll(".computer-board-div");
         let result = document.querySelector(".result");
         let restartButton = document.querySelector(".restart");
+        document.querySelector(".restart").classList.remove("invis");
+        document.querySelector(".result").classList.remove("invis");
+        computerBoardDOM.classList.remove("invis");
+
 
         for(let i=0; i < 100; i++) {
             computerBoardUnits[i].removeEventListener("click", attackForComputer);
@@ -183,31 +187,45 @@ const DOM = (() => {
         }
 
         restartButton.addEventListener("click", Game.restartGame);
-        restartButton.classList.remove("invis");
-
     }
 
     let restartGame = () => {
-        for(let i=1; i <= 100; i++) {
-            coordinate = String(i);
+            // coordinate = String(i);
 
-            if (coordinate < 10) {
-                coordinate = '0' + coordinate;
+            // if (coordinate < 10) {
+            //     coordinate = '0' + coordinate;
+            // }
+
+            document.querySelector(".rotate-direction-ship-container").classList.remove("invis");
+            document.querySelector(".place-down-ship-elements").classList.remove("invis");
+            computerBoardDOM.classList.add("invis");
+            document.querySelector(".restart").classList.add("invis");
+            document.querySelector(".result").classList.add("invis");
+
+            for(let playerBoardUnit of playerBoardDOM.querySelectorAll(`[data-coordinate]`)) {
+                playerBoardUnit.classList.remove("board-div-selected");
+                playerBoardUnit.classList.remove("hit");
+                playerBoardUnit.classList.remove("missed");
+                playerBoardUnit.textContent = "";
+
             }
-            // boardUnit.classList.remove("board-div-hovered");
-            // boardUnitDOM.classList.add("board-div-selected");
-            // computerBoardDOM.classList.remove("invis");
-            // document.querySelector(".rotate-direction-ship-container").classList.add("invis");
-            // document.querySelector(".place-down-ship-elements").classList.add("invis");
+            for(let computerBoardUnit of computerBoardDOM.querySelectorAll(`[data-coordinate]`)) {
+                computerBoardUnit.classList.remove("board-div-selected");
+                computerBoardUnit.classList.remove("hit");
+                computerBoardUnit.classList.remove("missed");
+                computerBoardUnit.textContent = "";
+                computerBoardUnit.removeEventListener("click", attackForComputer);
+            }
 
-            // playerBoardDOM.querySelector(`[data-coordinate="${coordinate}"]`)        
-            // computerBoardDOM.querySelector(`[data-coordinate="${coordinate}"]`)     
-            // document.querySelector(`.computer-board > [data-coordinate="${coordinate}"]`).classList.add("missed");
-            // document.querySelector(`.player-board > [data-coordinate="${coordinate}"]`).classList.add("missed");
-            // computerBoardDOM.querySelector(`[data-coordinate="${coordinate}"]`).textContent = "SHIP HIT";
-            // playerBoardDOM.querySelector(`[data-coordinate="${coordinate}"]`).textContent = "SHIP HIT";
+            playerBoardDOM.innerHTML = "";
+            computerBoardDOM.innerHTML = "";
 
-        }
+            // data is resetted
+            Game.resetGameState();
+
+            // starts new game
+            Game.initialization();
+
     }
 
     return {
@@ -218,7 +236,8 @@ const DOM = (() => {
         beginCombatStage,
         initialization,
         hitAround,
-        endGame
+        endGame,
+        restartGame
     }
 
     // JUNK OUTDATED CODE
