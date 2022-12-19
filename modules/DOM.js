@@ -162,6 +162,8 @@ const DOM = (() => {
         }
 
         for(let coordinate of shipPlacement) {
+            console.log(coordinate);
+            console.log(shipPlacement)
             selectedDOM.querySelector(`[data-coordinate="${coordinate}"]`).classList.add("missed");
         }
 

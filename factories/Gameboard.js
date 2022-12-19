@@ -80,8 +80,6 @@ const Gameboard = () => {
 
       board[coordinate-1] = "HIT";
 
-      console.log(remainingShips);
-
       // Remove ship from array   
       if (targetedShip.isSunk()) {
         removeShip(targetedShip);
@@ -133,7 +131,6 @@ const Gameboard = () => {
       row += '\n';  
       result += row;
     }
-    console.log(result);
   }
 
   // surroundingcoordinates

@@ -457,8 +457,6 @@ const Game = (() => {
 
                 // if (!coordData.horizontal && coordinate <= 100) { // FOR VERTICAL 
                 //     shipPlacement.push(coordinate < 10 ? '0' + coordinate : String(coordinate));
-
-                console.log(coordData.correspondingTens);
                 
                 if ((parseInt(coordinate) <= 100) && ((coordinate)[0] == coordData.tensDigit && (coordinate)[1] != '0') || (coordinate == coordData.correspondingTens)) {
                     shipPlacement.push(coordinate < 10 ? '0' + coordinate : String(coordinate));
@@ -484,25 +482,16 @@ const Game = (() => {
             let ship = Ship(computerShipsToBePlaced[0].name, computerShipsToBePlaced[0].size);
             let shipPlacement = computerGenerateCoordinates(computerShipsToBePlaced[0].size);
 
-            console.log("Computer Ship Placement: ", shipPlacement)
-
             computer.getGameboard().placeShip(shipPlacement, ship);
             computerShipsToBePlaced.shift();
         }
         
-        // console.log("Player: ");
-        // console.log(player.getGameboard().getBoard());
-        console.log("Computer: ");
-        computer.getGameboard().printBoard();
     }
 
     let hitAround = (shipPlacement, nameOfPlayer) => {
         let horizontal = parseInt(shipPlacement[1]) == parseInt(shipPlacement[0]) + 1 ? true : false;
         
         let surroundingCoordinates = getSurroundingCoordinates(shipPlacement, horizontal);
-
-        // surrounding shipplacement
-        console.log("Sunk surrounding coordinates: " + nameOfPlayer + " " + surroundingCoordinates);
 
         if (nameOfPlayer == "computer") {
             computer.getGameboard().hitAround(surroundingCoordinates);
@@ -526,6 +515,10 @@ const Game = (() => {
             // UP
             if (originalPlacement[0][0] != '0') {
                 let uppArr = originalPlacement.map((element) => {
+                    if (element == "100") {
+                        return "90";
+                    }
+
                     return String(parseInt(element[0]) - 1) + String(element[1]);
                 })
 
@@ -592,6 +585,7 @@ const Game = (() => {
             }
 
         } else if (!horizontal) {
+        // side
 
             if (originalPlacement[0][0] != '0') {   
                 let upElement = String(parseInt(originalPlacement[0][0]) - 1) + String(originalPlacement[0][1])
@@ -655,7 +649,11 @@ const Game = (() => {
                 }
 
                 for(let i=0; i < originalPlacement.length; i++) {
-                    shipPlacement.push(String(parseInt(rightElementTens) + i) + String(rightElementOnes));
+                    if (originalPlacement[i]== "99") {
+                        shipPlacement.push("100");
+                    } else {
+                        shipPlacement.push(String(parseInt(rightElementTens) + i) + String(rightElementOnes));
+                    }
                 }
 
             }
